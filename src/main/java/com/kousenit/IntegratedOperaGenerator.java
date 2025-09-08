@@ -47,7 +47,7 @@ public class IntegratedOperaGenerator {
                 System.out.printf("   • %s%n", scene.getImageFileName());
             });
 
-            // Optional: Generate a critical review (requires Google AI API key)
+            // Optional: Generate a critical review (requires a Google AI API key)
             if (System.getenv("GOOGLEAI_API_KEY") != null) {
                 System.out.println("\n📰 Step 5: Generating critical review...");
                 try {
