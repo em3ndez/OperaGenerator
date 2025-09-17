@@ -69,11 +69,18 @@ public class OperaImageGenerator {
     }
 
     private static void generateSingleImage(OpenAiImageModel model, Opera.Scene scene) {
-        String prompt = String.format(
-                "Create an illustration for Scene %d: %s. The scene description: %s",
+        String prompt = String.format("""
+                Create a cinematic concept illustration for Scene %d: %s.
+                Scene description: %s
+                Render an ultra-realistic modern opera production with dramatic stage lighting,
+                rich costuming, expressive posing, and atmospheric depth. Emphasize emotional
+                intensity, nuanced facial expressions, and layered set design. Use a 16:9 wide
+                composition suitable for a stage backdrop. Avoid cartoon, caricature, flat shading,
+                or comic styles.
+                """,
                 scene.number(),
                 scene.title(),
-                scene.content().substring(0, Math.min(500, scene.content().length()))
+                scene.content().substring(0, Math.min(600, scene.content().length()))
         );
 
         try {

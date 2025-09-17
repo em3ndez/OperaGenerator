@@ -2,7 +2,7 @@
 
 ## Overview
 
-The Opera Generator is an automated system that uses AI models (GPT-4.1 and Claude Sonnet 4) to collaboratively create opera librettos and generate illustrations for each scene. This guide walks through the complete execution path and usage instructions.
+The Opera Generator is an automated system that uses AI models (GPT-5 and Claude Opus 4.1) to collaboratively create opera librettos and generate illustrations for each scene. This guide walks through the complete execution path and usage instructions.
 
 ## 🚀 Quick Start
 
@@ -21,8 +21,8 @@ java IntegratedOperaGenerator "My Opera Title"
 ### Prerequisites
 - Java 21 or higher
 - Environment variables set for API keys:
-  - `OPENAI_API_KEY` - For GPT-4.1 and DALL-E 3
-  - `ANTHROPIC_API_KEY` - For Claude Sonnet 4
+  - `OPENAI_API_KEY` - For GPT-5, GPT-5.1 Mini, and DALL-E 3
+  - `ANTHROPIC_API_KEY` - For Claude Opus 4.1
 
 ## 🔄 Complete Execution Path
 
@@ -40,7 +40,7 @@ Opera opera = conversation.generateOpera(operaTitle, numberOfScenes);
 ```
 
 **Process Details:**
-- **2a.** If `title` is null/blank → Ask GPT-4.1 to suggest a title
+- **2a.** If `title` is null/blank → Ask GPT-5 to suggest a title
 - **2b.** Set up `ChatMemory` with the Connecticut jungle premise:
   ```
   Setting: Wild jungles of Connecticut after global warming  
@@ -48,7 +48,7 @@ Opera opera = conversation.generateOpera(operaTitle, numberOfScenes);
   Plot: Classic opera love triangle with modern twist
   ```
 - **2c.** Loop for `numberOfScenes` iterations:
-  - **Alternates models:** `i % 2 == 0 ? gpt41 : claude`
+  - **Alternates models:** `i % 2 == 0 ? gpt5 : claude`
   - **Sends prompt:** "Please write the next scene"
   - **Parses response** using regex pattern `Scene \d+: (.+)`
   - **Creates `Opera.Scene`** objects with (number, title, author, content)
@@ -72,18 +72,18 @@ var librettoPath = LibrettoWriter.saveLibretto(opera);
   ---
   
   ### Scene 1: Scene Title
-  > **Author: GPT-4.1**
+  > **Author: GPT-5**
   
   [scene content]
   
   ---
   
   ### Scene 2: Another Scene
-  > **Author: Claude Sonnet 4**
+  > **Author: Claude Opus 4.1**
   
   [scene content]
   ```
-- **3c.** Writes to `src/main/resources/{title}_libretto.md`
+- **3c.** Writes to `production_runs/<timestamp>_{title}/{title}_libretto.md`
 
 ### 4. **Individual Scene Files** (`LibrettoWriter.saveScenesToFiles`)
 ```text
@@ -107,7 +107,7 @@ OperaImageGenerator.generateImages(opera);
 ```
 
 **Process Details:**
-- **5a.** Creates DALL-E 3 model with API key
+- **5a.** Creates the OpenAI gpt-image-1 model with API key
 - **5b.** Opens virtual thread executor: `newVirtualThreadPerTaskExecutor()`
 - **5c.** Maps each scene to `CompletableFuture.runAsync()`:
   - **Each virtual thread** calls `generateSingleImage(model, scene)`
@@ -115,7 +115,7 @@ OperaImageGenerator.generateImages(opera);
 - **5d.** Waits for all futures: `CompletableFuture.allOf().join()`
 
 **Inside `generateSingleImage(model, scene)`:**
-- **5e.** Creates prompt: `"Create illustration for Scene X: Title. Description: [first 500 chars]"`
+- **5e.** Creates a cinematic illustration prompt highlighting ultra-realistic stage lighting, expressive opera poses, rich costuming, and explicitly asks to avoid cartoon or flat styles
 - **5f.** Calls `model.generate(prompt)` → DALL-E 3 API
 - **5g.** Uses `ImageSaver.saveImage()` to download/save image
 - **5h.** Renames to `scene.getImageFileName()`: `scene_X_illustration.png`
@@ -159,11 +159,11 @@ try (var executor = Executors.newVirtualThreadPerTaskExecutor()) {
 
 ## 📁 Output Structure
 
-After successful execution, the following files are created in `src/main/resources/`:
+After successful execution, the following files are created in `production_runs/<timestamp>_{title}/`:
 
 ```
-src/main/resources/
-├── {title}_libretto.md           # Complete opera markdown
+production_runs/<timestamp>_{title}/
+├── {title}_complete_libretto.md  # Complete opera markdown
 ├── scene_1_opening_scene.txt     # Individual scene files
 ├── scene_2_first_encounter.txt   
 ├── scene_3_love_duet.txt
@@ -173,7 +173,10 @@ src/main/resources/
 ├── scene_2_illustration.png
 ├── scene_3_illustration.png
 ├── scene_4_illustration.png
-└── scene_5_illustration.png
+├── scene_5_illustration.png
+├── {title}_synopsis.md           # Dramaturg synopsis
+├── {title}_critique.md           # Gemini review (if enabled)
+└── production_metadata.json
 ```
 
 ## 🎭 Key Data Flow
@@ -213,7 +216,7 @@ OperaImageGenerator.generateImages(opera);
 1. **Missing API Keys:** Ensure environment variables are set
 2. **Invalid Scene Count:** Must be a positive integer
 3. **Network Issues:** Image generation may fail if OpenAI API is unreachable
-4. **File Permissions:** Ensure write access to `src/main/resources/`
+4. **File Permissions:** Ensure write access to your chosen output directory (default: `production_runs/`)
 
 ### Error Messages
 

@@ -44,16 +44,21 @@ public class Conversation {
 
     private static final Pattern SCENE_PATTERN = Pattern.compile("Scene\\s+(\\d+):\\s*(.+?)(?:\\n|$)", Pattern.CASE_INSENSITIVE);
 
-    public final ChatModel gpt41 = AiModels.GPT_4_1;
+    public static String defaultPremise() {
+        return DEFAULT_PREMISE;
+    }
 
-    public final ChatModel claude = AiModels.CLAUDE_SONNET_4;
+    public final ChatModel gpt5 = AiModels.GPT_5;
+
+    public final ChatModel claude = AiModels.CLAUDE_OPUS_4_1;
 
     public Opera generateOpera(String title, int numberOfScenes) {
         return generateOpera(title, DEFAULT_PREMISE, numberOfScenes);
     }
 
     public Opera generateOpera(String title, String premise, int numberOfScenes) {
-        ChatMemory memory = MessageWindowChatMemory.withMaxMessages(20);
+        int memoryWindow = Math.max(numberOfScenes * 2 + 6, 20);
+        ChatMemory memory = MessageWindowChatMemory.withMaxMessages(memoryWindow);
         List<Opera.Scene> scenes = new ArrayList<>();
 
         // First, ask for the opera title if not provided
@@ -65,26 +70,44 @@ public class Conversation {
                     the lost city of Hartford, the Connecticut jungle, or the romantic conflict.
                     Please provide just the title, nothing else.
                     """));
-            ChatResponse titleResponse = gpt41.chat(memory.messages());
+            ChatResponse titleResponse = gpt5.chat(memory.messages());
             title = extractTitle(titleResponse.aiMessage().text());
             memory.clear();
         }
 
-        // Set up the premise
+        // Set up the premise and global instructions for both collaborators
         memory.add(SystemMessage.from(premise + """
+                
+                We will collaboratively write %d scenes in total. Build toward a satisfying
+                conclusion that resolves the opera in Scene %d. Maintain continuity with the
+                context in memory and, if this session resumes mid-opera, continue from the
+                next unwritten scene without retconning earlier events.
                 
                 When writing scenes, please format them as:
                 Scene X: [Scene Title]
                 [Scene content]
-                """));
-
-        UserMessage userMessage = UserMessage.from("Please write the next scene.");
-        memory.add(userMessage);
+                """.formatted(numberOfScenes, numberOfScenes)));
 
         ChatModel model;
         for (int i = 0; i < numberOfScenes; i++) {
-            model = i % 2 == 0 ? gpt41 : claude;
-            String modelName = model == gpt41 ? "GPT-4.1" : "Claude Sonnet 4";
+            model = i % 2 == 0 ? gpt5 : claude;
+            String modelName = model == gpt5 ? "GPT-5" : "Claude Opus 4.1";
+
+            int sceneNumber = i + 1;
+            boolean isFinalScene = sceneNumber == numberOfScenes;
+            String scenePrompt = """
+                    We are writing Scene %d of %d.
+                    Provide only this scene with an evocative title and lyrical stage directions.
+                    Maintain continuity with prior scenes captured in memory.
+                    %s
+                    """.formatted(
+                    sceneNumber,
+                    numberOfScenes,
+                    isFinalScene
+                            ? "This is the final scene; tie off the major plot threads, resolve the romantic arc, and deliver a decisive ending for the opera."
+                            : "Set the stage for upcoming scenes so the opera can naturally progress to its finale.");
+
+            memory.add(UserMessage.from(scenePrompt.trim()));
 
             ChatResponse response = model.chat(memory.messages());
             String responseText = response.aiMessage().text();
@@ -97,7 +120,6 @@ public class Conversation {
             scenes.add(scene);
 
             memory.add(response.aiMessage());
-            memory.add(userMessage);
         }
 
         return new Opera(title, premise, scenes);

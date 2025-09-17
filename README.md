@@ -5,7 +5,7 @@ An AI-powered opera generation system that orchestrates multiple AI models to cr
 ## Overview
 
 This application generates original operas by:
-- **Text Generation**: Alternating between GPT-4.1 and Claude Sonnet 4 to write scenes
+- **Text Generation**: Alternating between GPT-5 and Claude Opus 4.1 to write scenes
 - **Image Generation**: Creating illustrations for each scene using OpenAI's gpt-image-1
 - **Voice Narration**: Generating dramatic audio using ElevenLabs text-to-speech
 - **Audio Playback**: Playing generated narration with JLayer
@@ -22,8 +22,8 @@ Plus integration with external tools:
 - Java 21 or higher
 - Gradle
 - API keys for:
-  - OpenAI (for GPT-4.1 and gpt-image-1 image generation)
-  - Anthropic (for Claude Sonnet 4)
+  - OpenAI (for GPT-5, GPT-5.1 Mini, and gpt-image-1 image generation)
+  - Anthropic (for Claude Opus 4.1)
   - Google AI (optional, for opera critique feature)
   - ElevenLabs (optional, for voice narration)
 
@@ -96,11 +96,11 @@ The system creates:
 2. **Individual scene files** with detailed stage directions and lyrics
 3. **AI-generated illustrations** for each scene (PNG format)
 4. **Voice narration files** for dramatic stage directions (MP3 format)
-5. **An organized directory** containing all assets
+5. **An organized directory** containing all assets (default root: `production_runs/<timestamp>_<title>/`)
 
-Example output structure:
+Example output structure (default location: `production_runs`):
 ```
-src/main/resources/opera_title/
+production_runs/20250218-123045_opera_title/
 ├── opera_title_complete_libretto.md   # Full opera with embedded images
 ├── scene_1_title.txt                   # Individual scene files
 ├── scene_1_illustration.png            # AI-generated illustrations
@@ -108,13 +108,15 @@ src/main/resources/opera_title/
 ├── scene_2_title.txt
 ├── scene_2_illustration.png
 ├── scene_2_narration.mp3
-├── opera_introduction.mp3              # Dramatic introduction
+├── opera_title_synopsis.md             # Dramaturg synopsis
+├── opera_title_critique.md             # Gemini critic review (if enabled)
+├── production_metadata.json            # Run metadata ledger
 └── ...
 ```
 
 ## Features
 
-- **AI Collaboration**: GPT-4.1 and Claude alternate writing scenes, creating unique stylistic variety
+- **AI Collaboration**: GPT-5 and Claude Opus 4.1 alternate writing scenes, creating unique stylistic variety
 - **Visual Storytelling**: Each scene gets an AI-generated illustration using gpt-image-1
 - **Voice Narration**: Dramatic audio narration of stage directions using ElevenLabs
 - **Audio Playback**: Live audio playback using JLayer for presentations and demos
@@ -143,7 +145,7 @@ The project includes a complete 8-scene opera with beautiful libretto formatting
 - Critical review praising its "fearless embrace of the bizarre"
 - Themes of love, nature, technology, and transformation
 
-**Location**: `src/main/resources/hartford_ascending_an_opera_of_love_and_ruins/`
+**Location**: `production_runs/<timestamp>_hartford_ascending/hartford_ascending_an_opera_of_love_and_ruins/`
 
 ## Performance
 

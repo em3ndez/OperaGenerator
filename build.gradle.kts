@@ -1,5 +1,6 @@
 plugins {
     id("java")
+    id("application")
 }
 
 group = "com.kousenit"
@@ -11,12 +12,17 @@ java {
     }
 }
 
+application {
+    val overrideMain = project.findProperty("mainClass") as String?
+    mainClass.set(overrideMain ?: "com.kousenit.OperaGeneratorApp")
+}
+
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    implementation(platform("dev.langchain4j:langchain4j-bom:1.1.0"))
+    implementation(platform("dev.langchain4j:langchain4j-bom:1.5.0"))
     implementation("dev.langchain4j:langchain4j")
     implementation("dev.langchain4j:langchain4j-core")
     implementation("dev.langchain4j:langchain4j-open-ai")
@@ -26,6 +32,7 @@ dependencies {
     implementation("dev.langchain4j:langchain4j-anthropic")
 
     implementation("ch.qos.logback:logback-classic:1.5.18")
+    implementation("info.picocli:picocli:4.7.5")
     
     // For ElevenLabs API JSON serialization
     implementation("com.google.code.gson:gson:2.11.0")

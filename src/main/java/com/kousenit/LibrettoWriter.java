@@ -13,7 +13,7 @@ public class LibrettoWriter {
 
     // Pattern to match character singing lines (CHARACTER (description): or CHARACTER:)
     private static final Pattern SINGING_PATTERN = Pattern.compile(
-            "^([A-Z][A-Z\\s&]+)\\s*\\(([^)]+)\\):\\s*$|^([A-Z][A-Z\\s&]+):\\s*$",
+            "^([A-Z][A-Za-z\\s&'\\-]+)\\s*(?:\\(([^)]+)\\))?:\\s*$",
             Pattern.MULTILINE
     );
 
@@ -21,7 +21,7 @@ public class LibrettoWriter {
      * Automatically formats scene content to use Option 1 stanza formatting.
      * Converts character singing lines to use blockquotes with proper line breaks.
      */
-    private static String formatSceneContent(String content) {
+    static String formatSceneContent(String content) {
         String[] lines = content.split("\n");
         StringBuilder result = new StringBuilder();
         boolean inLyricSection = false;
@@ -32,7 +32,7 @@ public class LibrettoWriter {
             // Check if this line starts a new singing section
             Matcher matcher = SINGING_PATTERN.matcher(line);
             if (matcher.matches()) {
-                String character = matcher.group(1) != null ? matcher.group(1) : matcher.group(3);
+                String character = matcher.group(1).trim();
                 String description = matcher.group(2);
 
                 // Determine voice type based on character name
@@ -88,15 +88,15 @@ public class LibrettoWriter {
         String name = character.toLowerCase();
 
         // Common character patterns
-        if (name.contains("sandra") || name.contains("soprano")) return "soprano";
-        if (name.contains("lucian") || name.contains("tenor")) return "tenor";
-        if (name.contains("maximilian") || name.contains("baritone")) return "baritone";
-        if (name.contains("robot") || name.contains("bass")) return "bass";
+        if (name.contains("sandra") || name.contains("soprano") || name.contains("lyra")) return "soprano";
+        if (name.contains("lucian") || name.contains("tenor") || name.contains("virgil")) return "tenor";
+        if (name.contains("maximilian") || name.contains("baritone") || name.contains("calder") || name.contains("marcus") || name.contains("agent")) return "baritone";
+        if (name.contains("robot") || name.contains("bass") || name.contains("aria-7") || name.contains("automaton")) return "bass";
         if (name.contains("helena") || name.contains("mezzo")) return "mezzo-soprano";
         if (name.contains("all") || name.contains("chorus")) return "ensemble";
 
         // Default assignments for common opera roles
-        if (name.contains("agent") || name.contains("government")) return "baritone";
+        if (name.contains("government")) return "baritone";
         if (name.contains("explorer") || name.contains("woman")) return "soprano";
         if (name.contains("poet") || name.contains("man")) return "tenor";
         if (name.contains("council") || name.contains("citizens")) return "chorus";
@@ -169,7 +169,17 @@ public class LibrettoWriter {
         String folderName = opera.title().toLowerCase()
                 .replaceAll("[^a-z0-9\\s]", "")
                 .replaceAll("\\s+", "_");
-        Path operaDir = Paths.get(RESOURCE_PATH, folderName);
+
+        Path basePath = Paths.get(RESOURCE_PATH);
+        String baseName = basePath.getFileName() != null ? basePath.getFileName().toString() : "";
+
+        Path operaDir;
+        if (!baseName.contains(folderName)) {
+            operaDir = basePath.resolve(folderName);
+        } else {
+            operaDir = basePath;
+        }
+
         Files.createDirectories(operaDir);
 
         // Save complete libretto with all scenes formatted

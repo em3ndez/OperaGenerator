@@ -5,7 +5,7 @@ This document provides context for Claude when working on the Opera Generator pr
 ## Project Overview
 
 This is an AI-powered opera generation system built with Java 21 and LangChain4j 1.1.0. The system creates complete multimedia operas by:
-1. Using GPT-4.1 and Claude Sonnet 4 to alternately write scenes
+1. Using GPT-5 and Claude Opus 4.1 to alternately write scenes
 2. Generating illustrations with OpenAI's gpt-image-1 model
 3. Creating dramatic voice narration with ElevenLabs text-to-speech
 4. Playing audio with JLayer for live demonstrations

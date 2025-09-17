@@ -60,10 +60,9 @@ replay_pid*
 # Gradle Wrapper jar file (don't ignore)
 !gradle-wrapper.jar
 
-# Generated opera files (uncomment if you don't want to commit generated content)
-# src/main/resources/*/
-# *.png
-# *_libretto.md
+# Generated opera artifacts
+.gradle-cache/
+production_runs/
 
 # Environment files (if you create any)
 .env
