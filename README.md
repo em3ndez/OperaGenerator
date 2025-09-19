@@ -5,12 +5,12 @@ An AI-powered opera generation system that orchestrates multiple AI models to cr
 ## Overview
 
 This application generates original operas by:
-- **Text Generation**: Alternating between GPT-5 and Claude Opus 4.1 to write scenes
-- **Image Generation**: Creating illustrations for each scene using OpenAI's gpt-image-1
-- **Voice Narration**: Generating dramatic audio using ElevenLabs text-to-speech
-- **Audio Playback**: Playing generated narration with JLayer
-- **Automatic Formatting**: Beautiful stanza formatting applied when scenes are saved
-- **Critical Reviews**: AI-generated critiques using Google Gemini
+- **Text Generation**: Alternating between GPT-5 and Claude Opus 4.1 to write scenes (Step 1)
+- **Automatic Formatting**: Beautiful stanza formatting applied when scenes are saved (Step 2)
+- **Voice Narration**: Generating dramatic audio using ElevenLabs text-to-speech (Step 3)
+- **Image Generation**: Creating illustrations for each scene using OpenAI's gpt-image-1 (Step 4)
+- **Critical Reviews**: AI-generated critiques using Google Gemini (Step 5)
+- **Audio Playback**: Playing generated narration with JLayer for demonstrations
 - **Complete Organization**: All assets structured in organized directories
 
 Plus integration with external tools:
@@ -95,21 +95,26 @@ The system creates:
 1. **A complete libretto** in Markdown format with all scenes
 2. **Individual scene files** with detailed stage directions and lyrics
 3. **AI-generated illustrations** for each scene (PNG format)
-4. **Voice narration files** for dramatic stage directions (MP3 format)
+4. **Voice narration files** (MP3 format):
+   - Opera introduction narration
+   - Stage directions narration for each scene
+   - Critic's audio review (if critique is generated)
 5. **An organized directory** containing all assets (default root: `production_runs/<timestamp>_<title>/`)
 
 Example output structure (default location: `production_runs`):
 ```
 production_runs/20250218-123045_opera_title/
 ├── opera_title_complete_libretto.md   # Full opera with embedded images
+├── opera_introduction.mp3              # Dramatic introduction narration
 ├── scene_1_title.txt                   # Individual scene files
 ├── scene_1_illustration.png            # AI-generated illustrations
-├── scene_1_narration.mp3               # AI voice narration
+├── scene_1_narration.mp3               # Stage directions narration
 ├── scene_2_title.txt
 ├── scene_2_illustration.png
 ├── scene_2_narration.mp3
 ├── opera_title_synopsis.md             # Dramaturg synopsis
 ├── opera_title_critique.md             # Gemini critic review (if enabled)
+├── critic_review_audio.mp3             # Audio version of critic review
 ├── production_metadata.json            # Run metadata ledger
 └── ...
 ```

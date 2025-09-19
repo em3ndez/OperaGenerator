@@ -26,6 +26,39 @@ public class IntegratedOperaGenerator {
             var librettoPath = LibrettoWriter.saveCompleteOpera(opera);
             System.out.println("✅ Opera saved with beautiful formatting\n");
 
+            // Step 3: Generate audio narration (optional - requires ElevenLabs API key)
+            if (System.getenv("ELEVENLABS_API_KEY") != null) {
+                System.out.println("🎙️ Step 3: Generating audio narration...");
+                try {
+                    NarratorVoice narrator = new NarratorVoice();
+                    Path operaDir = librettoPath.getParent();
+
+                    // Generate dramatic introduction
+                    Path introAudio = narrator.generateOperaIntroduction(opera, operaDir);
+                    System.out.println("   ✅ Introduction narration created: " + introAudio.getFileName());
+
+                    // Generate narration for each scene's stage directions
+                    int narratedScenes = 0;
+                    for (Opera.Scene scene : opera.scenes()) {
+                        Path sceneAudio = narrator.generateSceneNarration(scene, operaDir);
+                        if (sceneAudio != null) {
+                            System.out.printf("   ✅ Scene %d narration created: %s%n",
+                                            scene.number(), sceneAudio.getFileName());
+                            narratedScenes++;
+                        }
+                    }
+
+                    if (narratedScenes == 0) {
+                        System.out.println("   ℹ️ No stage directions found to narrate in scenes");
+                    }
+                    System.out.println("✅ Audio narration complete\n");
+                } catch (Exception e) {
+                    System.out.println("   ⚠️ Could not generate audio narration: " + e.getMessage() + "\n");
+                }
+            } else {
+                System.out.println("ℹ️ Step 3: Skipping audio narration (set ELEVENLABS_API_KEY to enable)\n");
+            }
+
             // Step 4: Generate illustrations for each scene
             System.out.println("🎨 Step 4: Generating illustrations for each scene...");
             System.out.println("⚠️  This may take several minutes due to API rate limiting...\n");
@@ -47,6 +80,15 @@ public class IntegratedOperaGenerator {
                 System.out.printf("   • %s%n", scene.getImageFileName());
             });
 
+            // List audio files if generated
+            if (System.getenv("ELEVENLABS_API_KEY") != null) {
+                System.out.println("\n🎵 Audio Files:");
+                System.out.println("   • opera_introduction.mp3");
+                opera.scenes().forEach(scene ->
+                    System.out.printf("   • scene_%d_narration.mp3 (if stage directions exist)%n", scene.number())
+                );
+            }
+
             // Optional: Generate a critical review (requires a Google AI API key)
             if (System.getenv("GOOGLEAI_API_KEY") != null) {
                 System.out.println("\n📰 Step 5: Generating critical review...");
@@ -54,7 +96,21 @@ public class IntegratedOperaGenerator {
                     OperaCritic critic = new OperaCritic();
                     Path operaDir = librettoPath.getParent();
                     critic.reviewAndSave(operaDir, opera.title());
-                    System.out.println("✅ Critical review generated\n");
+                    System.out.println("✅ Critical review generated");
+
+                    // Generate audio for the critic's review if ElevenLabs is available
+                    if (System.getenv("ELEVENLABS_API_KEY") != null) {
+                        try {
+                            Path critiquePath = operaDir.resolve(opera.title().toLowerCase().replace(" ", "_") + "_critique.md");
+                            String review = java.nio.file.Files.readString(critiquePath);
+                            NarratorVoice narrator = new NarratorVoice();
+                            Path criticAudio = narrator.generateCriticAudio(review, opera.title(), operaDir);
+                            System.out.println("   🎙️ Critic audio review created: " + criticAudio.getFileName());
+                        } catch (Exception e) {
+                            System.out.println("   ⚠️ Could not generate critic audio: " + e.getMessage());
+                        }
+                    }
+                    System.out.println();
                 } catch (Exception e) {
                     System.out.println("⚠️  Could not generate critique: " + e.getMessage());
                 }

@@ -47,10 +47,10 @@ src/main/java/com/kousenit/
 1. **IntegratedOperaGenerator** orchestrates the entire process
 2. **Conversation** generates scenes alternating between AI models
 3. **LibrettoWriter** saves markdown and individual scene files with automatic formatting
-4. **OperaImageGenerator** creates illustrations with rate limiting
-5. **NarratorVoice** generates dramatic audio narration using ElevenLabs
-6. **AudioPlayer** plays generated audio for live demonstrations
-7. **OperaCritic** (optional) generates critical review using Gemini
+4. **NarratorVoice** generates dramatic audio narration using ElevenLabs (Step 3)
+5. **OperaImageGenerator** creates illustrations with rate limiting (Step 4)
+6. **OperaCritic** (optional) generates critical review using Gemini (Step 5)
+7. **AudioPlayer** plays generated audio for live demonstrations
 
 ### Testing Commands
 
