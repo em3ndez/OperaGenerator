@@ -7,6 +7,8 @@ import dev.langchain4j.model.output.Response;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
 import org.junit.jupiter.api.io.TempDir;
+import com.kousenit.tags.IntegrationTest;
+import com.kousenit.tags.ExpensiveTest;
 
 import java.nio.file.Path;
 import java.time.Duration;
@@ -27,6 +29,7 @@ class ImageModelTest {
 
 
     @Test
+    @IntegrationTest
     void testGptImage1ModelWithBase64Output() {
         // Given
         var model = OpenAiImageModel.builder()
@@ -81,6 +84,7 @@ class ImageModelTest {
     }
 
     @Test
+    @IntegrationTest
     void testDallE3ModelWithUrlOutput() {
         // Given
         var model = OpenAiImageModel.builder()
@@ -116,6 +120,7 @@ class ImageModelTest {
     }
 
     @Test
+    @IntegrationTest
     void testImageSaverWithGptImage1() {
         // Given
         var model = OpenAiImageModel.builder()
@@ -143,6 +148,7 @@ class ImageModelTest {
     }
 
     @Test
+    @IntegrationTest
     void testImageSaverWithDallE3() {
         // Given
         var model = OpenAiImageModel.builder()
@@ -170,6 +176,7 @@ class ImageModelTest {
     }
 
     @Test
+    @ExpensiveTest
     void testModelComparison() {
         // This test compares the output characteristics of both models
         System.out.println("\n🔍 Model Comparison:");

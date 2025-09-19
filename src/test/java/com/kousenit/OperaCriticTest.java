@@ -2,12 +2,14 @@ package com.kousenit;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
+import com.kousenit.tags.IntegrationTest;
 
 import java.nio.file.Path;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @EnabledIfEnvironmentVariable(named = "GOOGLEAI_API_KEY", matches = ".+")
+@IntegrationTest
 class OperaCriticTest {
 
     @Test

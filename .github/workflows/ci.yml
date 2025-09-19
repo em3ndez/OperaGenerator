@@ -6,13 +6,16 @@ on:
       - main
       - master
   pull_request:
+  workflow_dispatch:  # Allow manual triggering for full test suite
 
 permissions:
   contents: read
 
 jobs:
-  build:
+  # Fast unit tests - run on every push/PR
+  unit-tests:
     runs-on: ubuntu-latest
+    name: Unit Tests
 
     steps:
       - name: Check out repository
@@ -32,7 +35,66 @@ jobs:
         with:
           cache-read-only: ${{ github.event_name == 'pull_request' }}
 
-      - name: Build and test
-        run: ./gradlew build
+      - name: Run unit tests only
+        run: ./gradlew unitTest
         env:
           CI: true
+
+  # Integration tests - only run on main branch or manual trigger
+  integration-tests:
+    runs-on: ubuntu-latest
+    name: Integration Tests (API Calls)
+    if: |
+      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'push' && github.ref == 'refs/heads/main')
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v3
+
+      - name: Run integration tests
+        run: ./gradlew integrationTest
+        env:
+          CI: true
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          GOOGLEAI_API_KEY: ${{ secrets.GOOGLEAI_API_KEY }}
+          ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
+        continue-on-error: true  # Don't fail the build if integration tests fail
+
+  # Expensive tests - only manual trigger
+  expensive-tests:
+    runs-on: ubuntu-latest
+    name: Expensive Tests (Full Opera Generation)
+    if: github.event_name == 'workflow_dispatch'
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v3
+
+      - name: Run expensive tests
+        run: ./gradlew expensiveTest
+        env:
+          CI: true
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          GOOGLEAI_API_KEY: ${{ secrets.GOOGLEAI_API_KEY }}
+          ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}

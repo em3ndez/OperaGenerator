@@ -7,6 +7,8 @@ import dev.langchain4j.data.message.UserMessage;
 import dev.langchain4j.model.chat.response.ChatResponse;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
+import com.kousenit.tags.ExpensiveTest;
+import com.kousenit.tags.IntegrationTest;
 
 import java.util.List;
 
@@ -18,6 +20,7 @@ class ConversationTest {
     private final Conversation conversation = new Conversation();
 
     @Test
+    @ExpensiveTest
     void testGenerateSmallOpera() {
         // Test the new generateOpera method with a small opera
         Opera opera = conversation.generateOpera("Test Opera", 2);
@@ -40,6 +43,7 @@ class ConversationTest {
     }
 
     @Test
+    @IntegrationTest
     void testGenerateOperaWithAutoTitle() {
         // Test auto-title generation (pass null for title)
         Opera opera = conversation.generateOpera(null, 1);
@@ -52,6 +56,7 @@ class ConversationTest {
     }
 
     @Test
+    @IntegrationTest
     @EnabledIfEnvironmentVariable(named = "GOOGLEAI_API_KEY", matches = ".+")
     void critique() {
         Document libretto = FileSystemDocumentLoader.loadDocument(

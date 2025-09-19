@@ -48,6 +48,40 @@ dependencies {
 }
 
 tasks.test {
-    useJUnitPlatform()
+    useJUnitPlatform {
+        // Support for JUnit 5 tags
+        if (project.hasProperty("test.tags")) {
+            includeTags(project.property("test.tags").toString())
+        }
+        // Exclude expensive tests by default unless explicitly included
+        if (!project.hasProperty("test.tags")) {
+            excludeTags("expensive", "integration")
+        }
+    }
     jvmArgs("-XX:+EnableDynamicAgentLoading", "-Xshare:off")
+}
+
+// Task to run only unit tests (no API calls)
+tasks.register<Test>("unitTest") {
+    useJUnitPlatform {
+        excludeTags("integration", "expensive")
+    }
+    description = "Run only unit tests (no API calls)"
+}
+
+// Task to run integration tests (API calls but not expensive)
+tasks.register<Test>("integrationTest") {
+    useJUnitPlatform {
+        includeTags("integration")
+        excludeTags("expensive")
+    }
+    description = "Run integration tests (API calls)"
+}
+
+// Task to run expensive tests (full opera generation)
+tasks.register<Test>("expensiveTest") {
+    useJUnitPlatform {
+        includeTags("expensive")
+    }
+    description = "Run expensive tests (full opera generation)"
 }

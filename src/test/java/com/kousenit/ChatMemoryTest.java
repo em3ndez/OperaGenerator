@@ -3,9 +3,11 @@ package com.kousenit;
 import dev.langchain4j.memory.chat.MessageWindowChatMemory;
 import dev.langchain4j.service.AiServices;
 import org.junit.jupiter.api.Test;
+import com.kousenit.tags.IntegrationTest;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@IntegrationTest
 public class ChatMemoryTest {
 
     @Test

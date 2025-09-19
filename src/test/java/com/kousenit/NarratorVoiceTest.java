@@ -2,6 +2,7 @@ package com.kousenit;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
+import com.kousenit.tags.IntegrationTest;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.Files;
@@ -9,6 +10,7 @@ import java.nio.file.Files;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @EnabledIfEnvironmentVariable(named = "ELEVENLABS_API_KEY", matches = ".*")
+@IntegrationTest
 class NarratorVoiceTest {
     private final NarratorVoice narrator = new NarratorVoice();
 

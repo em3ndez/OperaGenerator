@@ -2,6 +2,7 @@ package com.kousenit;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
+import com.kousenit.tags.IntegrationTest;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -12,6 +13,7 @@ import java.nio.file.Paths;
 class AudioDemoTest {
     
     @Test
+    @IntegrationTest
     void generateAndPlayOperaIntroduction() throws Exception {
         NarratorVoice narrator = new NarratorVoice();
         Path outputDir = Paths.get("src/main/resources/hartford_ascending_an_opera_of_love_and_ruins");
@@ -33,6 +35,7 @@ class AudioDemoTest {
     }
     
     @Test
+    @IntegrationTest
     void generateAndPlaySceneNarration() throws Exception {
         NarratorVoice narrator = new NarratorVoice();
         Path outputDir = Paths.get("src/main/resources/hartford_ascending_an_opera_of_love_and_ruins");

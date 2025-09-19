@@ -1,5 +1,7 @@
 package com.kousenit;
 
+import com.kousenit.tags.ExpensiveTest;
+import com.kousenit.tags.IntegrationTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
 import org.junit.jupiter.api.io.TempDir;
@@ -20,6 +22,7 @@ class OperaGenerationIntegrationTest {
 
 
     @Test
+    @ExpensiveTest
     void testCompleteOperaGeneration() {
         // Given
         String testTitle = "Test Opera for Integration";
@@ -121,6 +124,7 @@ class OperaGenerationIntegrationTest {
     }
 
     @Test
+    @IntegrationTest
     void testImageGenerationWorkflow() {
         // Given
         Opera.Scene scene = new Opera.Scene(1, "Visual Test", "GPT-5", 
