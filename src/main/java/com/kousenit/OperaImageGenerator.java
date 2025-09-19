@@ -27,9 +27,53 @@ public class OperaImageGenerator {
     private static final Logger logger = LoggerFactory.getLogger(OperaImageGenerator.class);
     static String RESOURCE_PATH = "src/main/resources"; // Package-private for testing
 
-    // Rate limiting configuration
-    private static final int MAX_CONCURRENT_REQUESTS = 2; // Conservative limit
-    private static final Duration DELAY_BETWEEN_REQUESTS = Duration.ofSeconds(1); // Throttle requests
+    // Rate limiting configuration (configurable via system properties or environment variables)
+    private static final int MAX_CONCURRENT_REQUESTS = getMaxConcurrentRequests();
+    private static final Duration DELAY_BETWEEN_REQUESTS = getDelayBetweenRequests();
+
+    private static int getMaxConcurrentRequests() {
+        // Check system property first, then environment variable, then default
+        String prop = System.getProperty("opera.image.maxConcurrent");
+        if (prop == null) {
+            prop = System.getenv("OPERA_IMAGE_MAX_CONCURRENT");
+        }
+        if (prop != null) {
+            try {
+                int value = Integer.parseInt(prop);
+                logger.info("Using MAX_CONCURRENT_REQUESTS={} from configuration", value);
+                return value;
+            } catch (NumberFormatException e) {
+                logger.warn("Invalid MAX_CONCURRENT_REQUESTS value: {}, using default", prop);
+            }
+        }
+
+        // Default conservative value - can be increased based on rate limit testing
+        logger.info("Using default MAX_CONCURRENT_REQUESTS=2 (conservative). " +
+                   "Set OPERA_IMAGE_MAX_CONCURRENT env var or opera.image.maxConcurrent system property to override.");
+        return 2;
+    }
+
+    private static Duration getDelayBetweenRequests() {
+        // Check system property first, then environment variable, then default
+        String prop = System.getProperty("opera.image.delayMs");
+        if (prop == null) {
+            prop = System.getenv("OPERA_IMAGE_DELAY_MS");
+        }
+        if (prop != null) {
+            try {
+                long ms = Long.parseLong(prop);
+                logger.info("Using DELAY_BETWEEN_REQUESTS={}ms from configuration", ms);
+                return Duration.ofMillis(ms);
+            } catch (NumberFormatException e) {
+                logger.warn("Invalid DELAY_MS value: {}, using default", prop);
+            }
+        }
+
+        // Default 1 second delay - can be reduced based on rate limit testing
+        logger.info("Using default DELAY_BETWEEN_REQUESTS=1000ms. " +
+                   "Set OPERA_IMAGE_DELAY_MS env var or opera.image.delayMs system property to override.");
+        return Duration.ofSeconds(1);
+    }
 
     public static void generateImages(Opera opera) {
         generateImages(opera, MAX_CONCURRENT_REQUESTS, DELAY_BETWEEN_REQUESTS);

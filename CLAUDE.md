@@ -66,6 +66,12 @@ src/main/java/com/kousenit/
 ./gradlew test --tests AudioDemoTest::generateAndPlayOperaIntroduction
 ./gradlew test --tests NarratorVoiceTest
 
+# Test optimal rate limits for gpt-image-1 (EXPENSIVE - manual trigger only)
+./gradlew test --tests RateLimitExplorationTest
+
+# Run with custom rate limiting
+./gradlew run -Dopera.image.maxConcurrent=4 -Dopera.image.delayMs=500
+
 # Compile and run main class directly
 ./gradlew compileJava
 java -cp build/classes/java/main com.kousenit.IntegratedOperaGenerator
@@ -138,6 +144,14 @@ Must have these environment variables set:
 - `ANTHROPIC_API_KEY`
 - `GOOGLEAI_API_KEY` (only for critique functionality)
 - `ELEVENLABS_API_KEY` (only for voice narration)
+
+Optional configuration for image generation rate limiting:
+- `OPERA_IMAGE_MAX_CONCURRENT` - Max concurrent image requests (default: 2)
+- `OPERA_IMAGE_DELAY_MS` - Delay between requests in milliseconds (default: 1000)
+
+Can also be set via system properties:
+- `-Dopera.image.maxConcurrent=5` - Set max concurrent requests
+- `-Dopera.image.delayMs=500` - Set delay between requests
 
 ### Useful Patterns
 

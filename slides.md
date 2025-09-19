@@ -74,12 +74,12 @@ Kousen IT, Inc.
 # The AI Orchestra 🎼
 
 <div style="position: absolute; top: 60px; right: 40px; opacity: 0.9;">
-  <img src="./src/main/resources/hartford_ascending_an_opera_of_love_and_ruins/scene_8_illustration.png" alt="Scene 8: Finale - The New Dawn" style="height: 200px; border-radius: 10px; border: 2px solid #333;" />
+  <img src="./showcase/hartford_ascending_an_opera_of_love_and_ruins/scene_8_illustration.png" alt="Scene 8: Finale - The New Dawn" style="height: 200px; border-radius: 10px; border: 2px solid #333;" />
 </div>
 
 <v-clicks>
 
-- **Text Generation**: GPT-4.1 + Claude Sonnet 4 writing scenes
+- **Text Generation**: GPT-5 + Claude Opus 4.1 writing scenes
 - **Image Generation**: OpenAI's gpt-image-1 creating illustrations  
 - **Music Generation**: Suno AI composing arias
 - **Voice Narration**: ElevenLabs reading stage directions
@@ -93,8 +93,10 @@ Kousen IT, Inc.
 
 ```java
 // Java conducts the AI ensemble
-Opera opera = conversation.generateOpera("Hartford Ascending", 5);
+Opera opera = conversation.generateOpera("Hartford Ascending", 8);
 OperaImageGenerator.generateImages(opera);
+NarratorVoice narrator = new NarratorVoice();
+narrator.generateOperaIntroduction(opera, outputDir);
 OperaCritic.review(opera);
 // Plus: Suno for music, NotebookLM for podcast
 ```
@@ -118,7 +120,7 @@ Traditional approach: One model, one task
 // Boring! Same voice throughout
 ChatLanguageModel model = OpenAiChatModel.builder()
     .apiKey(apiKey)
-    .modelName("gpt-4.1")
+    .modelName("gpt-5")
     .build();
 ```
 
@@ -126,11 +128,11 @@ Our approach: Multiple models alternating scenes
 
 ```java
 // Exciting! Different perspectives
-ChatLanguageModel gpt4 = createGptModel();
+ChatLanguageModel gpt5 = createGptModel();
 ChatLanguageModel claude = createClaudeModel();
 
 // Alternate between them for variety
-model = (i % 2 == 0) ? gpt4 : claude;
+model = (i % 2 == 0) ? gpt5 : claude;
 ```
 
 </v-clicks>
@@ -151,10 +153,10 @@ model = (i % 2 == 0) ? gpt4 : claude;
 ```java
 // One interface, multiple models
 ChatLanguageModel gpt = OpenAiChatModel.builder()
-    .apiKey(apiKey).modelName("gpt-4.1").build();
+    .apiKey(apiKey).modelName("gpt-5").build();
 
-ChatLanguageModel claude = AnthropicChatModel.builder()  
-    .apiKey(apiKey).modelName("claude-sonnet-4-20250514").build();
+ChatLanguageModel claude = AnthropicChatModel.builder()
+    .apiKey(apiKey).modelName("claude-opus-4-1-20250805").build();
 
 // Same methods, different providers!
 String response1 = gpt.generate("Write an opera scene");
@@ -169,22 +171,19 @@ String response2 = claude.generate("Continue the story");
 
 ```java
 public class AiModels {
-    public static ChatLanguageModel getOpenAiModel() {
-        return OpenAiChatModel.builder()
-            .apiKey(ApiKeys.OPENAI_API_KEY)
-            .modelName("gpt-4.1")
-            .temperature(0.7)
-            .timeout(ofSeconds(60))
-            .build();
-    }
-    
-    public static ChatLanguageModel getAnthropicModel() {
-        return AnthropicChatModel.builder()
-            .apiKey(ApiKeys.ANTHROPIC_API_KEY)
-            .modelName("claude-sonnet-4-20250514")
-            .temperature(0.7)
-            .build();
-    }
+    public static final ChatModel GPT_5 = OpenAiChatModel.builder()
+        .apiKey(ApiKeys.OPENAI_API_KEY)
+        .modelName("gpt-5")
+        .temperature(0.7)
+        .timeout(Duration.ofSeconds(60))
+        .build();
+
+    public static final ChatModel CLAUDE_OPUS_4_1 = AnthropicChatModel.builder()
+        .apiKey(ApiKeys.ANTHROPIC_API_KEY)
+        .modelName("claude-opus-4-1-20250805")
+        .temperature(0.7)
+        .maxTokens(4000)
+        .build();
 }
 ```
 
@@ -241,10 +240,12 @@ public class Conversation {
         memory.add(new SystemMessage(PREMISE));
         
         for (int i = 1; i <= scenes; i++) {
-            // Alternate models
-            var model = (i % 2 == 1) 
-                ? AiModels.getOpenAiModel() 
-                : AiModels.getAnthropicModel();
+            // Alternate models using switch expression
+            var model = switch (i % 2) {
+                case 0 -> AiModels.GPT_5;
+                case 1 -> AiModels.CLAUDE_OPUS_4_1;
+                default -> throw new IllegalStateException();
+            };
             
             // Generate with full context
             var response = model.generate(memory.messages());
@@ -264,7 +265,7 @@ public class Conversation {
 
 <v-clicks>
 
-**Scene 1** (GPT-4): Sandra meets Lucian
+**Scene 1** (GPT-5): Sandra meets Lucian
 ```
 SANDRA: Who are you, spirit or man?
 LUCIAN: I am Lucian. Here I dwell...
@@ -276,7 +277,7 @@ MAXIMILIAN: Sandra Greaves! Your trespass ends today!
 (He remembers Sandra from Scene 1)
 ```
 
-**Scene 3** (GPT-4): Romance develops
+**Scene 3** (GPT-5): Romance develops
 ```
 SANDRA & LUCIAN: (They remember their meeting)
 In this green cathedral, love takes root...
@@ -382,21 +383,22 @@ public record Opera(
 ```java
 public static void generateImages(Opera opera) {
     Semaphore rateLimiter = new Semaphore(2); // Max 2 concurrent
-    
+
     try (var executor = Executors.newVirtualThreadPerTaskExecutor()) {
         var futures = opera.scenes().stream()
             .map(scene -> CompletableFuture.runAsync(() -> {
-                try {
-                    rateLimiter.acquire();
+                try (var permit = new SemaphorePermit(rateLimiter)) {
                     Thread.sleep(1000); // Rate limiting
                     generateImage(scene);
-                } finally {
-                    rateLimiter.release();
+                } catch (Exception e) {
+                    throw new ImageGenerationException(e);
                 }
             }, executor))
             .toList();
-            
-        CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).join();
+
+        CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new))
+            .orTimeout(10, TimeUnit.MINUTES)
+            .join();
     }
 }
 ```
@@ -573,7 +575,7 @@ AudioPlayer.play(audioFile);
 # The AI Opera Critic 🎭
 
 <div style="position: absolute; top: 20px; right: 20px; opacity: 0.9;">
-  <img src="./src/main/resources/hartford_ascending_an_opera_of_love_and_ruins/scene_1_illustration.png" alt="Scene 1: Encounter Beneath the Banyan Trees" style="height: 180px; border-radius: 10px; border: 2px solid #444;" />
+  <img src="./showcase/hartford_ascending_an_opera_of_love_and_ruins/scene_1_illustration.png" alt="Scene 1: Encounter Beneath the Banyan Trees" style="height: 180px; border-radius: 10px; border: 2px solid #444;" />
 </div>
 
 <v-clicks>
@@ -629,7 +631,7 @@ public class OperaCritic {
 # AI Podcast with NotebookLM 🎙️
 
 <div style="position: absolute; top: 20px; right: 20px; opacity: 0.9;">
-  <img src="./src/main/resources/hartford_ascending_an_opera_of_love_and_ruins/notebooklm.png" alt="NotebookLM Interface" style="height: 180px; border-radius: 10px; border: 2px solid #444;" />
+  <img src="./showcase/hartford_ascending_an_opera_of_love_and_ruins/notebooklm.png" alt="NotebookLM Interface" style="height: 180px; border-radius: 10px; border: 2px solid #444;" />
 </div>
 
 <v-clicks>
@@ -700,7 +702,7 @@ Let's generate and play an opera together...
 <v-clicks>
 
 **The Complete Workflow:**
-1. Generate scene with GPT-4.1/Claude Sonnet 4 ✅
+1. Generate scene with GPT-5/Claude Opus 4.1 ✅
 2. Create illustration with gpt-image-1 ✅ 
 3. Generate narrator audio with ElevenLabs ✅
 4. **Play the audio live!** 🎵 ✅
@@ -721,7 +723,7 @@ Let's generate and play an opera together...
 # The Complete AI Orchestra 🎼
 
 <div style="position: absolute; top: 60px; right: 20px; opacity: 0.85;">
-  <img src="./src/main/resources/hartford_ascending_an_opera_of_love_and_ruins/scene_3_illustration.png" alt="Scene 3: Heartbeats and Warning Calls" style="height: 160px; border-radius: 8px; border: 2px solid #444;" />
+  <img src="./showcase/hartford_ascending_an_opera_of_love_and_ruins/scene_3_illustration.png" alt="Scene 3: Heartbeats and Warning Calls" style="height: 160px; border-radius: 8px; border: 2px solid #444;" />
 </div>
 
 <div class="grid grid-cols-2 gap-6">
@@ -729,8 +731,8 @@ Let's generate and play an opera together...
 <div>
 
 **Automated Pipeline** (Java)
-- GPT-4.1: Odd scenes ✅
-- Claude Sonnet 4: Even scenes ✅
+- GPT-5: Odd scenes ✅
+- Claude Opus 4.1: Even scenes ✅
 - gpt-image-1: All illustrations ✅
 - ElevenLabs: Narrations ✅
 - Gemini 2.5 Flash: Critique ✅
@@ -831,7 +833,7 @@ String continuationContext = premise + """
 
 <v-clicks>
 
-**Original Scenes** (GPT-4.1/Claude alternating):
+**Original Scenes** (GPT-5/Claude Opus 4.1 alternating):
 ```
 SANDRA: Who are you, spirit or man?
 LUCIAN: I am Lucian. Here I dwell...
@@ -883,13 +885,45 @@ HELENA: My daughter's daughter, welcome home at last!
 
 ---
 
+# Test Organization for Cost Control 💰
+
+<v-clicks>
+
+**Problem**: Integration tests cost real money with each API call
+
+**Solution**: Three-tier test categorization
+
+```java
+@Test
+@IntegrationTest  // Only runs on main branch
+void generateCompleteOpera() { /* ... */ }
+
+@Test
+@ExpensiveTest   // Manual execution only
+void generateWith50Scenes() { /* ... */ }
+
+@Test  // Runs on every push
+void testVoiceTypeDetection() { /* ... */ }
+```
+
+**GitHub Actions Setup**:
+- Unit tests: Every push ✅
+- Integration tests: Main branch only ✅
+- Expensive tests: Manual trigger ✅
+
+Saves hundreds of dollars in unnecessary API calls! 💸
+
+</v-clicks>
+
+---
+
 # The AI Orchestra Pattern 🎼
 
 <v-clicks>
 
 ## Each AI tool is like an instrument:
 
-- **GPT-4.1/Claude Sonnet 4**: The composers (libretto)
+- **GPT-5/Claude Opus 4.1**: The composers (libretto)
 - **gpt-image-1**: The set designer (visuals)
 - **Suno**: The musicians (musical arias)
 - **ElevenLabs + JLayer**: The narrator (stage directions + playback)
@@ -910,8 +944,8 @@ HELENA: My daughter's daughter, welcome home at last!
 <v-clicks>
 
 ## AI APIs Used (All Working!)
-- **OpenAI**: GPT-4.1 & gpt-image-1 ✅
-- **Anthropic**: Claude Sonnet 4 ✅
+- **OpenAI**: GPT-5 & gpt-image-1 ✅
+- **Anthropic**: Claude Opus 4.1 ✅
 - **Google**: Gemini 2.5 Flash ✅  
 - **ElevenLabs**: Voice narration ✅
 - **Suno AI**: Opera music ✅
@@ -922,6 +956,8 @@ HELENA: My daughter's daughter, welcome home at last!
 - **Text Blocks** ✅
 - **HttpClient** (JDK 11+) ✅
 - **JLayer** for Audio Playback ✅
+- **ChatRequest** for fine-tuned model control ✅
+- **SemaphorePermit** AutoCloseable wrapper ✅
 
 </v-clicks>
 
@@ -939,7 +975,7 @@ layout: default
 - **Slidev**: [sli.dev](https://sli.dev) (for this presentation)
 
 ## Hartford Ascending Assets
-- **AI-Generated Podcast**: [NotebookLM Discussion](./src/main/resources/hartford_ascending_an_opera_of_love_and_ruins/Hartford%20Ascending_Scene%201%20option%201.mp3) (14+ minutes)
+- **AI-Generated Podcast**: [NotebookLM Discussion](./showcase/hartford_ascending_an_opera_of_love_and_ruins/Hartford%20Ascending_Scene%201%20option%201.mp3) (14+ minutes)
 - **Complete Libretto**: Available in the GitHub repository
 
 </v-clicks>

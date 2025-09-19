@@ -20,6 +20,12 @@ public class LibrettoWriter {
     /**
      * Automatically formats scene content to use Option 1 stanza formatting.
      * Converts character singing lines to use blockquotes with proper line breaks.
+     * <p>
+     * Note: Uses an imperative approach rather than functional streams because:
+     * 1. The logic requires maintaining state (inLyricSection) across lines
+     * 2. Performance is better with StringBuilder for string concatenation
+     * 3. The imperative style is clearer for this type of stateful line processing
+     * 4. Easier to debug and maintain when handling complex formatting rules
      */
     static String formatSceneContent(String content) {
         String[] lines = content.split("\n");
@@ -83,8 +89,9 @@ public class LibrettoWriter {
     /**
      * Determines the voice type based on character description using pattern matching.
      * Uses operatic conventions and role archetypes rather than specific names.
+     * Package-private to allow testing and alternative implementations.
      */
-    private static String determineVoiceType(String character) {
+    static String determineVoiceType(String character) {
         String name = character.toLowerCase();
 
         // Use switch expression with pattern matching
