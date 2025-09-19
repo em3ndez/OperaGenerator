@@ -89,9 +89,25 @@ public class IntegratedOperaGenerator {
                 );
             }
 
+            // Step 6: Prepare export packages for external tools
+            System.out.println("📦 Step 6: Preparing exports for external tools...");
+            try {
+                Path operaDir = librettoPath.getParent();
+
+                // Generate Suno AI music prompts
+                ExternalToolsPreparer.generateSunoPrompts(opera, operaDir);
+
+                // Prepare NotebookLM package
+                ExternalToolsPreparer.prepareNotebookLMPackage(opera, operaDir);
+
+                System.out.println("✅ External tool packages prepared\n");
+            } catch (Exception e) {
+                System.out.println("⚠️ Could not prepare external packages: " + e.getMessage() + "\n");
+            }
+
             // Optional: Generate a critical review (requires a Google AI API key)
             if (System.getenv("GOOGLEAI_API_KEY") != null) {
-                System.out.println("\n📰 Step 5: Generating critical review...");
+                System.out.println("📰 Step 7: Generating critical review...");
                 try {
                     OperaCritic critic = new OperaCritic();
                     Path operaDir = librettoPath.getParent();
