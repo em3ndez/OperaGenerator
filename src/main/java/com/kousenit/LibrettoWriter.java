@@ -81,48 +81,90 @@ public class LibrettoWriter {
     }
 
     /**
-     * Determines the voice type based on character name using switch expressions.
-     * This uses common opera character naming conventions.
+     * Determines the voice type based on character description using pattern matching.
+     * Uses operatic conventions and role archetypes rather than specific names.
      */
     private static String determineVoiceType(String character) {
         String name = character.toLowerCase();
 
         // Use switch expression with pattern matching
         return switch (name) {
-            // Soprano roles
-            case String s when s.contains("sandra") || s.contains("soprano") || s.contains("lyra")
-                -> "soprano";
-
-            // Tenor roles
-            case String s when s.contains("lucian") || s.contains("tenor") || s.contains("virgil")
-                -> "tenor";
-
-            // Baritone roles
-            case String s when s.contains("maximilian") || s.contains("baritone") ||
-                             s.contains("calder") || s.contains("marcus") ||
-                             s.contains("agent") || s.contains("government")
-                -> "baritone";
-
-            // Bass roles
-            case String s when s.contains("robot") || s.contains("bass") ||
-                             s.contains("aria-7") || s.contains("automaton")
-                -> "bass";
-
-            // Mezzo-soprano roles
-            case String s when s.contains("helena") || s.contains("mezzo")
+            // Explicit voice type indicators (highest priority)
+            // Check mezzo-soprano BEFORE soprano to avoid false matches
+            case String s when s.matches(".*(mezzo-soprano|mezzo|mez\\.).*")
                 -> "mezzo-soprano";
 
-            // Ensemble/Chorus
-            case String s when s.contains("all") || s.contains("chorus") ||
-                             s.contains("council") || s.contains("citizens")
-                -> "ensemble";
-
-            // Generic character type mapping
-            case String s when s.contains("explorer") || s.contains("woman")
+            case String s when s.matches(".*\\b(soprano|sop\\.).*")
                 -> "soprano";
 
-            case String s when s.contains("poet") || s.contains("man")
+            case String s when s.matches(".*\\b(alto|contralto).*")
+                -> "alto";
+
+            case String s when s.matches(".*\\b(tenor|ten\\.).*")
                 -> "tenor";
+
+            case String s when s.matches(".*\\b(baritone|bar\\.).*")
+                -> "baritone";
+
+            case String s when s.matches(".*\\b(bass)\\b.*")
+                -> "bass";
+
+            // Ensemble/Chorus (check before individual roles)
+            case String s when s.matches(".*(chorus|ensemble|all|crowd|citizens|people|villagers).*")
+                -> "ensemble";
+
+            // Character archetype patterns (opera conventions)
+            // Soprano archetypes
+            case String s when s.matches(".*(heroine|maiden|girl|daughter|princess|young woman|ingenue|beloved).*")
+                -> "soprano";
+
+            // Mezzo-soprano archetypes
+            case String s when s.matches(".*(mother|matron|queen|witch|temptress|older woman|rival).*")
+                -> "mezzo-soprano";
+
+            // Tenor archetypes
+            case String s when s.matches(".*(hero|prince|lover|poet|youth|young man|romantic lead).*")
+                -> "tenor";
+
+            // Baritone archetypes
+            case String s when s.matches(".*(villain|father|king|authority|official|antagonist|rival|count|baron).*")
+                -> "baritone";
+
+            // Bass archetypes
+            case String s when s.matches(".*(elder|sage|priest|wizard|philosopher|old man|prophet).*")
+                -> "bass";
+
+            // Role/profession-based patterns
+            case String s when s.matches(".*(explorer|scientist|researcher|scholar).*")
+                -> "soprano"; // Often the protagonist
+
+            // Check mechanical/robot BEFORE guard/soldier to handle "mechanical guardian"
+            case String s when s.matches(".*(robot|android|automaton|machine|mechanical|ai|artificial).*")
+                -> "bass"; // Mechanical beings often bass for gravitas
+
+            case String s when s.matches(".*(soldier|guard|captain|general|warrior).*") &&
+                           !s.matches(".*(mechanical|robot|android).*")
+                -> "baritone"; // Military roles typically baritone
+
+            case String s when s.matches(".*(agent|official|bureaucrat|inspector).*")
+                -> "baritone"; // Authority figures
+
+            // Gender-based fallbacks (last resort)
+            case String s when s.matches(".*(woman|female|lady|girl|she|her).*") &&
+                           !s.matches(".*(old|elder|mother).*")
+                -> "soprano";
+
+            case String s when s.matches(".*(woman|female|lady).*") &&
+                           s.matches(".*(old|elder|mother).*")
+                -> "mezzo-soprano";
+
+            case String s when s.matches(".*(man|male|lord|boy|he|his).*") &&
+                           !s.matches(".*(old|elder|father).*")
+                -> "tenor";
+
+            case String s when s.matches(".*(man|male|lord).*") &&
+                           s.matches(".*(old|elder|father).*")
+                -> "baritone";
 
             // Default fallback
             default -> "voice";

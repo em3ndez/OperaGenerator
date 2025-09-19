@@ -98,9 +98,12 @@ public class Conversation {
                 context in memory and, if this session resumes mid-opera, continue from the
                 next unwritten scene without retconning earlier events.
                 
-                When writing scenes, please format them as:
-                Scene X: [Scene Title]
-                [Scene content]
+                When writing scenes:
+                1. Format as: Scene X: [Scene Title]
+                2. When introducing new characters, include their role/archetype
+                   (e.g., "the young heroine", "the aging king", "the villainous count")
+                3. If known, you may include voice type: CHARACTER (soprano), VILLAIN (baritone)
+                4. This helps with proper operatic casting
                 """.formatted(numberOfScenes, numberOfScenes)));
 
         // Use record for model info
