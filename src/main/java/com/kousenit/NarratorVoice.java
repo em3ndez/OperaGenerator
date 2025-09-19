@@ -1,6 +1,9 @@
 package com.kousenit;
 
 import com.google.gson.Gson;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -8,6 +11,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.Duration;
 import java.util.Map;
 
 /**
@@ -15,16 +19,30 @@ import java.util.Map;
  * This adds dramatic spoken narration without attempting to sing.
  */
 public class NarratorVoice {
-    
-    private static final String ELEVEN_LABS_API_KEY = System.getenv("ELEVENLABS_API_KEY");
+
+    private static final Logger logger = LoggerFactory.getLogger(NarratorVoice.class);
+
+    private static final String ELEVEN_LABS_API_KEY = ApiKeys.ELEVENLABS_API_KEY;
     private static final String API_URL = "https://api.elevenlabs.io/v1/text-to-speech/";
-    
+
     // ElevenLabs voice IDs (you can customize these)
     private static final String NARRATOR_VOICE = "EXAVITQu4vr4xnSDxMaL"; // "Bella" - warm narrator
     private static final String CRITIC_VOICE = "ErXwobaYiN019PkySvjV"; // "Antoni" - authoritative
-    
-    private final HttpClient client = HttpClient.newHttpClient();
+
+    private static final HttpClient CLIENT = HttpClient.newBuilder()
+        .connectTimeout(Duration.ofSeconds(30))
+        .build();
+
     private final Gson gson = new Gson();
+
+    /**
+     * Validates that the ElevenLabs API key is available.
+     */
+    public NarratorVoice() {
+        if (!ApiKeys.isAvailable(ELEVEN_LABS_API_KEY)) {
+            logger.warn("ElevenLabs API key not configured - audio narration will be skipped");
+        }
+    }
     
     /**
      * Generate narrator audio for scene stage directions.
@@ -108,7 +126,7 @@ public class NarratorVoice {
             Files.createDirectories(outputPath.getParent());
             
             // Stream response directly to file
-            var response = client.send(request, HttpResponse.BodyHandlers.ofFile(outputPath));
+            var response = CLIENT.send(request, HttpResponse.BodyHandlers.ofFile(outputPath));
             
             if (response.statusCode() != 200) {
                 throw new IOException("Failed to generate audio: " + response.statusCode());

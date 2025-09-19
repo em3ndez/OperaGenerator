@@ -4,17 +4,27 @@ import dev.langchain4j.data.image.Image;
 import dev.langchain4j.model.openai.OpenAiImageModel;
 import dev.langchain4j.model.output.Response;
 
+import com.kousenit.exception.ImageGenerationException;
+import com.kousenit.util.SemaphorePermit;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.time.Duration;
+import java.util.List;
+import java.util.ArrayList;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Semaphore;
+import java.util.concurrent.TimeUnit;
 
 public class OperaImageGenerator {
 
+    private static final Logger logger = LoggerFactory.getLogger(OperaImageGenerator.class);
     static String RESOURCE_PATH = "src/main/resources"; // Package-private for testing
 
     // Rate limiting configuration
@@ -35,24 +45,42 @@ public class OperaImageGenerator {
         // Use semaphore to limit concurrent requests
         Semaphore rateLimiter = new Semaphore(maxConcurrent);
 
+        List<ImageGenerationException> failures = new ArrayList<>();
+
         try (var executor = Executors.newVirtualThreadPerTaskExecutor()) {
             var futures = opera.scenes().stream()
-                    .map(scene -> CompletableFuture.runAsync(() ->
-                            generateSingleImageWithRateLimit(model, scene, rateLimiter, delayBetween), executor))
+                    .map(scene -> CompletableFuture.runAsync(() -> {
+                        try {
+                            generateSingleImageWithRateLimit(model, scene, rateLimiter, delayBetween);
+                        } catch (Exception e) {
+                            logger.error("Failed to generate image for scene {}: {}", scene.number(), e.getMessage());
+                            failures.add(new ImageGenerationException(
+                                "Image generation failed for scene " + scene.number(), scene.number(), e));
+                        }
+                    }, executor))
                     .toList();
 
-            // Wait for all image generations to complete
-            CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new)).join();
-            System.out.println("All image generation tasks completed.");
+            // Wait for all image generations to complete with timeout
+            try {
+                CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new))
+                    .orTimeout(10, TimeUnit.MINUTES)
+                    .join();
+            } catch (CompletionException e) {
+                logger.error("Image generation timed out or failed: {}", e.getMessage());
+            }
+
+            logger.info("All image generation tasks completed. Failures: {}", failures.size());
+            if (!failures.isEmpty()) {
+                logger.warn("Failed to generate {} images", failures.size());
+                failures.forEach(f -> logger.warn("  Scene {}: {}", f.getSceneNumber(), f.getMessage()));
+            }
         }
     }
 
 
     private static void generateSingleImageWithRateLimit(OpenAiImageModel model, Opera.Scene scene,
-                                                         Semaphore rateLimiter, Duration delayBetween) {
-        try {
-            rateLimiter.acquire(); // Wait for permit
-
+                                                         Semaphore rateLimiter, Duration delayBetween) throws ImageGenerationException {
+        try (var permit = new SemaphorePermit(rateLimiter)) {
             // Add delay to throttle requests
             if (!delayBetween.isZero()) {
                 Thread.sleep(delayBetween.toMillis());
@@ -62,13 +90,17 @@ public class OperaImageGenerator {
 
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-            System.err.println("Image generation interrupted for Scene " + scene.number());
-        } finally {
-            rateLimiter.release(); // Always release permit
+            logger.error("Image generation interrupted for Scene {}", scene.number());
+            throw new ImageGenerationException(
+                "Image generation interrupted for scene " + scene.number(), scene.number(), e);
+        } catch (Exception e) {
+            logger.error("Failed to generate image for Scene {}: {}", scene.number(), e.getMessage());
+            throw new ImageGenerationException(
+                "Failed to generate image for scene " + scene.number(), scene.number(), e);
         }
     }
 
-    private static void generateSingleImage(OpenAiImageModel model, Opera.Scene scene) {
+    private static void generateSingleImage(OpenAiImageModel model, Opera.Scene scene) throws ImageGenerationException {
         String prompt = String.format("""
                 Create a cinematic concept illustration for Scene %d: %s.
                 Scene description: %s
@@ -91,7 +123,7 @@ public class OperaImageGenerator {
             Image image = imageResponse.content();
             boolean hasBase64 = image.base64Data() != null && !image.base64Data().isEmpty();
             boolean hasUrl = image.url() != null;
-            System.out.printf("Scene %d: Has base64=%s, Has URL=%s%n",
+            logger.debug("Scene {}: Has base64={}, Has URL={}",
                     scene.number(), hasBase64, hasUrl);
 
             // Save the image using our utility class
@@ -101,12 +133,16 @@ public class OperaImageGenerator {
                 // Rename the file to our desired filename
                 Path newPath = savedPath.resolveSibling(scene.getImageFileName());
                 Files.move(savedPath, newPath, StandardCopyOption.REPLACE_EXISTING);
-                System.out.println("Generated and renamed image: " + newPath);
+                logger.info("Generated and renamed image: {}", newPath);
             } else {
-                System.err.println("Failed to save image for Scene " + scene.number());
+                logger.error("Failed to save image for Scene {}", scene.number());
+                throw new ImageGenerationException(
+                    "Failed to save image for scene " + scene.number(), scene.number());
             }
         } catch (IOException e) {
-            System.err.println("Error generating or renaming image for Scene " + scene.number() + ": " + e.getMessage());
+            logger.error("Error generating or renaming image for Scene {}: {}", scene.number(), e.getMessage());
+            throw new ImageGenerationException(
+                "Error processing image for scene " + scene.number(), scene.number(), e);
         }
     }
 

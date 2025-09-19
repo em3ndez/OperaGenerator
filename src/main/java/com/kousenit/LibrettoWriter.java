@@ -81,27 +81,52 @@ public class LibrettoWriter {
     }
 
     /**
-     * Determines the voice type based on character name.
+     * Determines the voice type based on character name using switch expressions.
      * This uses common opera character naming conventions.
      */
     private static String determineVoiceType(String character) {
         String name = character.toLowerCase();
 
-        // Common character patterns
-        if (name.contains("sandra") || name.contains("soprano") || name.contains("lyra")) return "soprano";
-        if (name.contains("lucian") || name.contains("tenor") || name.contains("virgil")) return "tenor";
-        if (name.contains("maximilian") || name.contains("baritone") || name.contains("calder") || name.contains("marcus") || name.contains("agent")) return "baritone";
-        if (name.contains("robot") || name.contains("bass") || name.contains("aria-7") || name.contains("automaton")) return "bass";
-        if (name.contains("helena") || name.contains("mezzo")) return "mezzo-soprano";
-        if (name.contains("all") || name.contains("chorus")) return "ensemble";
+        // Use switch expression with pattern matching
+        return switch (name) {
+            // Soprano roles
+            case String s when s.contains("sandra") || s.contains("soprano") || s.contains("lyra")
+                -> "soprano";
 
-        // Default assignments for common opera roles
-        if (name.contains("government")) return "baritone";
-        if (name.contains("explorer") || name.contains("woman")) return "soprano";
-        if (name.contains("poet") || name.contains("man")) return "tenor";
-        if (name.contains("council") || name.contains("citizens")) return "chorus";
+            // Tenor roles
+            case String s when s.contains("lucian") || s.contains("tenor") || s.contains("virgil")
+                -> "tenor";
 
-        return "voice"; // Generic fallback
+            // Baritone roles
+            case String s when s.contains("maximilian") || s.contains("baritone") ||
+                             s.contains("calder") || s.contains("marcus") ||
+                             s.contains("agent") || s.contains("government")
+                -> "baritone";
+
+            // Bass roles
+            case String s when s.contains("robot") || s.contains("bass") ||
+                             s.contains("aria-7") || s.contains("automaton")
+                -> "bass";
+
+            // Mezzo-soprano roles
+            case String s when s.contains("helena") || s.contains("mezzo")
+                -> "mezzo-soprano";
+
+            // Ensemble/Chorus
+            case String s when s.contains("all") || s.contains("chorus") ||
+                             s.contains("council") || s.contains("citizens")
+                -> "ensemble";
+
+            // Generic character type mapping
+            case String s when s.contains("explorer") || s.contains("woman")
+                -> "soprano";
+
+            case String s when s.contains("poet") || s.contains("man")
+                -> "tenor";
+
+            // Default fallback
+            default -> "voice";
+        };
     }
 
     public static Path saveLibretto(Opera opera) throws IOException {
