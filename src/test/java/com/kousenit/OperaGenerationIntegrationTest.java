@@ -45,14 +45,14 @@ class OperaGenerationIntegrationTest {
             Opera.Scene scene = opera.scenes().get(i);
             assertThat(scene.number()).isEqualTo(i + 1);
             assertThat(scene.title()).isNotEmpty();
-            assertThat(scene.author()).isIn("GPT-5", "Claude Opus 4.1");
+            assertThat(scene.author()).isIn("GPT-5.2", "Claude Opus 4.5");
             assertThat(scene.content()).isNotEmpty();
         }
 
         // Verify alternating authors
         if (numberOfScenes >= 2) {
-            assertThat(opera.scenes().get(0).author()).isEqualTo("GPT-5");
-            assertThat(opera.scenes().get(1).author()).isEqualTo("Claude Opus 4.1");
+            assertThat(opera.scenes().get(0).author()).isEqualTo("GPT-5.2");
+            assertThat(opera.scenes().get(1).author()).isEqualTo("Claude Opus 4.5");
         }
 
         System.out.printf("✅ Generated opera '%s' with %d scenes%n", opera.title(), opera.scenes().size());
@@ -61,8 +61,8 @@ class OperaGenerationIntegrationTest {
     @Test
     void testLibrettoWriting() throws IOException {
         // Given
-        Opera.Scene scene1 = new Opera.Scene(1, "Opening", "GPT-5", "The curtain rises...");
-        Opera.Scene scene2 = new Opera.Scene(2, "Encounter", "Claude Opus 4.1", "The characters meet...");
+        Opera.Scene scene1 = new Opera.Scene(1, "Opening", "GPT-5.2", "The curtain rises...");
+        Opera.Scene scene2 = new Opera.Scene(2, "Encounter", "Claude Opus 4.5", "The characters meet...");
         Opera testOpera = new Opera("Test Libretto", "A test premise", List.of(scene1, scene2));
 
         // When - Save libretto
@@ -82,10 +82,10 @@ class OperaGenerationIntegrationTest {
                     .contains("## Premise")
                     .contains("A test premise")
                     .contains("### Scene 1: Opening")
-                    .contains("> **Author: GPT-5**")
+                    .contains("> **Author: GPT-5.2**")
                     .contains("The curtain rises...")
                     .contains("### Scene 2: Encounter")
-                    .contains("> **Author: Claude Opus 4.1**")
+                    .contains("> **Author: Claude Opus 4.5**")
                     .contains("The characters meet...");
 
             System.out.println("✅ Libretto saved and verified: " + librettoPath.getFileName());
@@ -97,7 +97,7 @@ class OperaGenerationIntegrationTest {
     @Test
     void testSceneFilesCreation() throws IOException {
         // Given
-        Opera.Scene scene1 = new Opera.Scene(1, "Test Scene", "GPT-5", "Scene content here");
+        Opera.Scene scene1 = new Opera.Scene(1, "Test Scene", "GPT-5.2", "Scene content here");
         Opera testOpera = new Opera("Test Opera", "Test premise", List.of(scene1));
 
         // When - Save scene files
@@ -114,7 +114,7 @@ class OperaGenerationIntegrationTest {
             String content = Files.readString(sceneFile);
             assertThat(content)
                     .contains("Scene 1: Test Scene")
-                    .contains("Author: GPT-5")
+                    .contains("Author: GPT-5.2")
                     .contains("Scene content here");
 
             System.out.println("✅ Scene file created and verified: " + sceneFile.getFileName());
@@ -127,7 +127,7 @@ class OperaGenerationIntegrationTest {
     @IntegrationTest
     void testImageGenerationWorkflow() {
         // Given
-        Opera.Scene scene = new Opera.Scene(1, "Visual Test", "GPT-5", 
+        Opera.Scene scene = new Opera.Scene(1, "Visual Test", "GPT-5.2", 
                 "A simple scene with a red apple on a table in bright lighting.");
         Opera testOpera = new Opera("Visual Test Opera", "Test premise", List.of(scene));
 
@@ -158,7 +158,7 @@ class OperaGenerationIntegrationTest {
     @Test 
     void testOperaRecordMethods() {
         // Given
-        Opera.Scene scene = new Opera.Scene(1, "Test Scene Name", "GPT-5", "Content");
+        Opera.Scene scene = new Opera.Scene(1, "Test Scene Name", "GPT-5.2", "Content");
         
         // When/Then - Test scene filename generation
         assertThat(scene.getFileName()).isEqualTo("scene_1_test_scene_name.txt");

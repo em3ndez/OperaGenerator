@@ -110,8 +110,8 @@ public class Conversation {
         for (int i = 0; i < numberOfScenes; i++) {
             // Use switch expression for model selection
             ModelInfo modelInfo = switch (i % 2) {
-                case 0 -> new ModelInfo(gpt5, "GPT-5");
-                case 1 -> new ModelInfo(claude, "Claude Opus 4.1");
+                case 0 -> new ModelInfo(gpt5, "GPT-5.2");
+                case 1 -> new ModelInfo(claude, "Claude Opus 4.5");
                 default -> throw new IllegalStateException("Unexpected modulo result");
             };
 

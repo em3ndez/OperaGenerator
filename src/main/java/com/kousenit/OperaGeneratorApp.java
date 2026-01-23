@@ -230,14 +230,14 @@ public class OperaGeneratorApp implements Callable<Integer> {
         Path metadataPath = operaDir.resolve("production_metadata.json");
 
         Set<String> models = new LinkedHashSet<>();
-        models.add("OpenAI GPT-5 (libretto)");
-        models.add("OpenAI GPT-5.1 Mini (synopsis)");
-        models.add("Anthropic Claude Opus 4.1 (libretto)");
+        models.add("OpenAI GPT-5.2 (libretto)");
+        models.add("OpenAI GPT-5 Mini (synopsis)");
+        models.add("Anthropic Claude Opus 4.5 (libretto)");
         if (!skipImages) {
-            models.add("OpenAI GPT-Image-1 (illustrations)");
+            models.add("Google Gemini Nano Banana (illustrations)");
         }
         if (!skipCritic) {
-            models.add("Google Gemini 2.5 Pro (critique)");
+            models.add("Google Gemini 3 Pro (critique)");
         }
 
         List<SceneProductionMetadata> sceneMetadata = opera.scenes().stream()
