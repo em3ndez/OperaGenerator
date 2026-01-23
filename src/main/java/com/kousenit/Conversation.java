@@ -55,7 +55,6 @@ public class Conversation {
 
     // Model configuration
     private static final double TEMPERATURE = 0.7;
-    private static final int MAX_OUTPUT_TOKENS = 2000;
 
     public final ChatModel gpt5 = AiModels.GPT_5_2;
     public final ChatModel claude = AiModels.CLAUDE_OPUS_4_5;
@@ -81,7 +80,6 @@ public class Conversation {
             ChatRequest titleRequest = ChatRequest.builder()
                 .messages(memory.messages())
                 .temperature(0.9) // Higher temperature for creative titles
-                .maxOutputTokens(100)
                 .build();
 
             ChatResponse titleResponse = gpt5.chat(titleRequest);
@@ -134,10 +132,11 @@ public class Conversation {
             memory.add(UserMessage.from(scenePrompt.trim()));
 
             // Use ChatRequest for better control
+            // Note: maxOutputTokens removed - GPT-5.2 requires max_completion_tokens
+            // which LangChain4j doesn't yet support. Relying on model defaults.
             ChatRequest sceneRequest = ChatRequest.builder()
                 .messages(memory.messages())
                 .temperature(TEMPERATURE)
-                .maxOutputTokens(MAX_OUTPUT_TOKENS)
                 .build();
 
             logger.info("Generating Scene {} with {}", sceneNumber, modelInfo.name());

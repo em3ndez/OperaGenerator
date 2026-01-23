@@ -15,6 +15,7 @@ java {
 application {
     val overrideMain = project.findProperty("mainClass") as String?
     mainClass.set(overrideMain ?: "com.kousenit.OperaGeneratorApp")
+    applicationDefaultJvmArgs = listOf("--enable-native-access=ALL-UNNAMED")
 }
 
 repositories {
