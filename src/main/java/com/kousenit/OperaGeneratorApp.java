@@ -107,7 +107,7 @@ public class OperaGeneratorApp implements Callable<Integer> {
         Files.createDirectories(runDirectory);
 
         String originalLibrettoPath = LibrettoWriter.RESOURCE_PATH;
-        String originalImagePath = OperaImageGenerator.RESOURCE_PATH;
+        String originalImagePath = GeminiImageGenerator.RESOURCE_PATH;
 
         Path librettoPath;
         Path synopsisPath;
@@ -117,7 +117,7 @@ public class OperaGeneratorApp implements Callable<Integer> {
 
         try {
             LibrettoWriter.RESOURCE_PATH = runDirectory.toString();
-            OperaImageGenerator.RESOURCE_PATH = runDirectory.toString();
+            GeminiImageGenerator.RESOURCE_PATH = runDirectory.toString();
 
             librettoPath = LibrettoWriter.saveCompleteOpera(opera);
             Path operaDir = librettoPath.getParent();
@@ -126,10 +126,10 @@ public class OperaGeneratorApp implements Callable<Integer> {
             synopsisPath = writeSynopsis(operaDir, opera.title(), synopsis);
 
             if (!skipImages) {
-                String previousImageRoot = OperaImageGenerator.RESOURCE_PATH;
-                OperaImageGenerator.RESOURCE_PATH = operaDir.toString();
-                OperaImageGenerator.generateImages(opera);
-                OperaImageGenerator.RESOURCE_PATH = previousImageRoot;
+                String previousImageRoot = GeminiImageGenerator.RESOURCE_PATH;
+                GeminiImageGenerator.RESOURCE_PATH = operaDir.toString();
+                GeminiImageGenerator.generateImages(opera);
+                GeminiImageGenerator.RESOURCE_PATH = previousImageRoot;
 
                 imagePaths = opera.scenes().stream()
                         .map(scene -> operaDir.resolve(scene.getImageFileName()))
@@ -151,7 +151,7 @@ public class OperaGeneratorApp implements Callable<Integer> {
             return metadataPath;
         } finally {
             LibrettoWriter.RESOURCE_PATH = originalLibrettoPath;
-            OperaImageGenerator.RESOURCE_PATH = originalImagePath;
+            GeminiImageGenerator.RESOURCE_PATH = originalImagePath;
         }
     }
 

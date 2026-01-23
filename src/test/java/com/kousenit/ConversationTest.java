@@ -68,7 +68,7 @@ class ConversationTest {
                 suitable for a newspaper review or academic journal:
                 %s
                 """.formatted(libretto.text());
-        var gemini = AiModels.GEMINI_FLASH_25;
+        var gemini = AiModels.GEMINI_3_PRO;
         ChatResponse response = gemini.chat(
                 List.of(SystemMessage.from("""
                         You are an experienced music critic

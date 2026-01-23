@@ -4,12 +4,13 @@ This document provides context for Claude when working on the Opera Generator pr
 
 ## Project Overview
 
-This is an AI-powered opera generation system built with Java 21 and LangChain4j 1.1.0. The system creates complete multimedia operas by:
-1. Using GPT-5 and Claude Opus 4.1 to alternately write scenes
-2. Generating illustrations with OpenAI's gpt-image-1 model
+This is an AI-powered opera generation system built with Java 21 and LangChain4j 1.10.0. The system creates complete multimedia operas by:
+1. Using GPT-5.2 and Claude Opus 4.5 to alternately write scenes
+2. Generating illustrations with Google's Gemini Nano Banana (gemini-3-pro-image-preview)
 3. Creating dramatic voice narration with ElevenLabs text-to-speech
 4. Playing audio with JLayer for live demonstrations
 5. Creating formatted libretti with embedded images and automatic stanza formatting
+6. Generating critical reviews with Google Gemini 3 Pro
 
 ## Key Technical Details
 
@@ -20,9 +21,10 @@ This is an AI-powered opera generation system built with Java 21 and LangChain4j
 - **Text blocks** for multi-line strings
 
 ### Important Model Information
-- **gpt-image-1**: Returns base64-encoded images (not URLs), no revised prompt, no token usage info
-- **Image generation timeout**: Set to 3 minutes due to slow response times
-- **Rate limiting**: Max 2 concurrent image requests with 1-second delays to avoid API throttling
+- **Gemini Nano Banana (gemini-3-pro-image-preview)**: Returns binary image data in response parts, requires GOOGLE_API_KEY and Pro account
+- **Image generation**: Uses Google GenAI SDK (com.google.genai:google-genai:1.36.0) with Client pattern
+- **Rate limiting**: Max 2 concurrent image requests with 1-second delays to avoid API throttling (configurable)
+- **Chat Models**: GPT-5.2 (OpenAI), Claude Opus 4.5 (Anthropic), Gemini 3 Pro/Flash (Google)
 - **ElevenLabs**: Uses HttpClient for API calls, streams audio directly to files
 - **Voice IDs**: Bella (narrator) and Antoni (critic) for different character voices
 
@@ -33,8 +35,8 @@ src/main/java/com/kousenit/
 ├── Opera.java                     # Domain model (Opera and Scene records)
 ├── Conversation.java              # AI scene generation logic
 ├── LibrettoWriter.java           # File output handling with automatic formatting
-├── OperaImageGenerator.java      # Image generation with rate limiting
-├── ImageSaver.java               # Handles base64 and URL image saving
+├── GeminiImageGenerator.java     # Image generation using Nano Banana with rate limiting
+├── ImageSaver.java               # Handles base64 and URL image saving (legacy)
 ├── NarratorVoice.java            # ElevenLabs voice narration
 ├── AudioPlayer.java              # JLayer audio playback
 ├── AiModels.java                 # Model configurations
@@ -45,11 +47,11 @@ src/main/java/com/kousenit/
 ### Workflow
 
 1. **IntegratedOperaGenerator** orchestrates the entire process
-2. **Conversation** generates scenes alternating between AI models
+2. **Conversation** generates scenes alternating between GPT-5.2 and Claude Opus 4.5
 3. **LibrettoWriter** saves markdown and individual scene files with automatic formatting
 4. **NarratorVoice** generates dramatic audio narration using ElevenLabs (Step 3)
-5. **OperaImageGenerator** creates illustrations with rate limiting (Step 4)
-6. **OperaCritic** (optional) generates critical review using Gemini (Step 5)
+5. **GeminiImageGenerator** creates illustrations using Nano Banana with rate limiting (Step 4)
+6. **OperaCritic** (optional) generates critical review using Gemini 3 Pro (Step 5)
 7. **AudioPlayer** plays generated audio for live demonstrations
 
 ### Testing Commands
@@ -140,10 +142,13 @@ When continuing development:
 ### Environment Requirements
 
 Must have these environment variables set:
-- `OPENAI_API_KEY`
-- `ANTHROPIC_API_KEY`
-- `GOOGLEAI_API_KEY` (only for critique functionality)
-- `ELEVENLABS_API_KEY` (only for voice narration)
+- `OPENAI_API_KEY` - For GPT-5.2 text generation
+- `ANTHROPIC_API_KEY` - For Claude Opus 4.5 text generation
+- `GOOGLE_API_KEY` - For Gemini Nano Banana image generation (requires Pro account)
+- `GOOGLEAI_API_KEY` - For Gemini 3 Pro critique functionality
+- `ELEVENLABS_API_KEY` (optional) - For voice narration
+
+**Note**: `GOOGLE_API_KEY` and `GOOGLEAI_API_KEY` can use the same value.
 
 Optional configuration for image generation rate limiting:
 - `OPERA_IMAGE_MAX_CONCURRENT` - Max concurrent image requests (default: 2)
@@ -156,8 +161,8 @@ Can also be set via system properties:
 ### Useful Patterns
 
 ```java
-// Rate-limited image generation
-OperaImageGenerator.generateImages(opera);
+// Rate-limited image generation with Gemini Nano Banana
+GeminiImageGenerator.generateImages(opera);
 
 // Generate opera with custom parameters
 Opera opera = conversation.generateOpera(title, numberOfScenes);

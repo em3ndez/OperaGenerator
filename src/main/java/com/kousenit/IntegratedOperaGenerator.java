@@ -59,10 +59,10 @@ public class IntegratedOperaGenerator {
                 System.out.println("ℹ️ Step 3: Skipping audio narration (set ELEVENLABS_API_KEY to enable)\n");
             }
 
-            // Step 4: Generate illustrations for each scene
-            System.out.println("🎨 Step 4: Generating illustrations for each scene...");
+            // Step 4: Generate illustrations for each scene using Gemini Nano Banana
+            System.out.println("🎨 Step 4: Generating illustrations for each scene with Nano Banana...");
             System.out.println("⚠️  This may take several minutes due to API rate limiting...\n");
-            OperaImageGenerator.generateImages(opera);
+            GeminiImageGenerator.generateImages(opera);
             System.out.println("✅ Illustrations generated\n");
 
             // Final summary

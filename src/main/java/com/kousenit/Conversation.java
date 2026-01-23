@@ -57,8 +57,8 @@ public class Conversation {
     private static final double TEMPERATURE = 0.7;
     private static final int MAX_OUTPUT_TOKENS = 2000;
 
-    public final ChatModel gpt5 = AiModels.GPT_5;
-    public final ChatModel claude = AiModels.CLAUDE_OPUS_4_1;
+    public final ChatModel gpt5 = AiModels.GPT_5_2;
+    public final ChatModel claude = AiModels.CLAUDE_OPUS_4_5;
 
     public Opera generateOpera(String title, int numberOfScenes) {
         return generateOpera(title, DEFAULT_PREMISE, numberOfScenes);
