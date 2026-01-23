@@ -17,13 +17,6 @@ public class AiModels {
             .maxRetries(4)
             .build();
 
-    public static final ChatModel GPT_5_2_PRO = OpenAiChatModel.builder()
-            .apiKey(ApiKeys.OPENAI_API_KEY)
-            .modelName("gpt-5.2-pro")
-            .timeout(Duration.ofMinutes(2))
-            .maxRetries(4)
-            .build();
-
     public static final ChatModel GPT_5_MINI = OpenAiChatModel.builder()
             .apiKey(ApiKeys.OPENAI_API_KEY)
             .modelName("gpt-5-mini")

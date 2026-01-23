@@ -10,8 +10,7 @@ Upgrade all AI models to their latest versions and switch from OpenAI gpt-image-
 
 ### Chat Models (All Confirmed ✓)
 - **Claude Opus 4.5**: `claude-opus-4-5-20251101` (production snapshot from Nov 1, 2025)
-- **GPT-5.2**: `gpt-5.2` (standard)
-- **GPT-5.2 Pro**: `gpt-5.2-pro` (premium tier - optional, more expensive)
+- **GPT-5.2**: `gpt-5.2` (standard - Note: gpt-5.2-pro does NOT exist)
 - **Gemini 3 Flash**: `gemini-3-flash-preview` (fast)
 - **Gemini 3 Pro**: `gemini-3-pro-preview` (advanced reasoning)
 
@@ -86,7 +85,6 @@ Update model names:
 - GPT_5 → `gpt-5.2`
 - CLAUDE_OPUS_4_1 → `claude-opus-4-5-20251101`
 - GEMINI_FLASH_25 → `gemini-3-flash-preview` or `gemini-3-pro-preview`
-- Optional: Add GPT_5_2_PRO variant
 
 ### GeminiImageGenerator.java (NEW FILE)
 Create new class using Google GenAI SDK, replacing OperaImageGenerator functionality.
