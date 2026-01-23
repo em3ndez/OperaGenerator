@@ -4,7 +4,7 @@ plugins {
 }
 
 group = "com.kousenit"
-version = "1.0-SNAPSHOT"
+version = "1.0"
 
 java {
     toolchain {
@@ -22,7 +22,7 @@ repositories {
 }
 
 dependencies {
-    implementation(platform("dev.langchain4j:langchain4j-bom:1.5.0"))
+    implementation(platform("dev.langchain4j:langchain4j-bom:1.10.0"))
     implementation("dev.langchain4j:langchain4j")
     implementation("dev.langchain4j:langchain4j-core")
     implementation("dev.langchain4j:langchain4j-open-ai")
@@ -31,18 +31,18 @@ dependencies {
     implementation("dev.langchain4j:langchain4j-ollama")
     implementation("dev.langchain4j:langchain4j-anthropic")
 
-    implementation("ch.qos.logback:logback-classic:1.5.18")
-    implementation("info.picocli:picocli:4.7.5")
+    implementation("ch.qos.logback:logback-classic:1.5.25")
+    implementation("info.picocli:picocli:4.7.7")
     
     // For ElevenLabs API JSON serialization
-    implementation("com.google.code.gson:gson:2.11.0")
+    implementation("com.google.code.gson:gson:2.13.2")
     
     // For playing generated audio files
     implementation("javazoom:jlayer:1.0.1")
 
-    testImplementation(platform("org.junit:junit-bom:5.13.3"))
+    testImplementation(platform("org.junit:junit-bom:6.0.2"))
     testImplementation("org.junit.jupiter:junit-jupiter")
-    testImplementation("org.assertj:assertj-core:3.26.3")
+    testImplementation("org.assertj:assertj-core:3.27.6")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 
 }
