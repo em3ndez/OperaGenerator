@@ -40,6 +40,7 @@ dependencies {
 
     // For Gemini image generation (Nano Banana)
     implementation("com.google.genai:google-genai:1.36.0")
+    implementation("commons-codec:commons-codec:1.20.0")
 
     // For playing generated audio files
     implementation("javazoom:jlayer:1.0.1")
