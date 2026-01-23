@@ -7,6 +7,7 @@ package com.kousenit;
 public class ApiKeys {
     public static final String OPENAI_API_KEY;
     public static final String ANTHROPIC_API_KEY;
+    public static final String GOOGLE_API_KEY;
     public static final String GOOGLEAI_API_KEY;
     public static final String ELEVENLABS_API_KEY;
 
@@ -14,6 +15,7 @@ public class ApiKeys {
         // Required keys - will throw exception if missing
         OPENAI_API_KEY = requireApiKey("OPENAI_API_KEY");
         ANTHROPIC_API_KEY = requireApiKey("ANTHROPIC_API_KEY");
+        GOOGLE_API_KEY = requireApiKey("GOOGLE_API_KEY");
 
         // Optional keys - can be null
         GOOGLEAI_API_KEY = getOptionalApiKey("GOOGLEAI_API_KEY");

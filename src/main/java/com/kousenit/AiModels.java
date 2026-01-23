@@ -9,18 +9,12 @@ import java.time.Duration;
 
 @SuppressWarnings("unused")
 public class AiModels {
-    public static final ChatModel GPT_5 = OpenAiChatModel.builder()
+    // OpenAI Models (upgraded to GPT-5.2)
+    public static final ChatModel GPT_5_2 = OpenAiChatModel.builder()
             .apiKey(ApiKeys.OPENAI_API_KEY)
-            .modelName("gpt-5")
+            .modelName("gpt-5.2")
             .timeout(Duration.ofMinutes(2))
             .maxRetries(4)
-            .build();
-
-    public static final ChatModel CLAUDE_OPUS_4_1 = AnthropicChatModel.builder()
-            .apiKey(ApiKeys.ANTHROPIC_API_KEY)
-            .modelName("claude-opus-4-1-20250805")
-            .logRequests(true)
-            .logResponses(true)
             .build();
 
     public static final ChatModel GPT_5_MINI = OpenAiChatModel.builder()
@@ -30,8 +24,32 @@ public class AiModels {
             .maxRetries(4)
             .build();
 
-    public static final ChatModel GEMINI_FLASH_25 = GoogleAiGeminiChatModel.builder()
-            .apiKey(ApiKeys.GOOGLEAI_API_KEY)
-            .modelName("gemini-2.5-pro")
+    // Anthropic Models (upgraded to Opus 4.5)
+    public static final ChatModel CLAUDE_OPUS_4_5 = AnthropicChatModel.builder()
+            .apiKey(ApiKeys.ANTHROPIC_API_KEY)
+            .modelName("claude-opus-4-5-20251101")
+            .logRequests(true)
+            .logResponses(true)
             .build();
+
+    // Google Gemini Models (upgraded to Gemini 3)
+    public static final ChatModel GEMINI_3_FLASH = GoogleAiGeminiChatModel.builder()
+            .apiKey(ApiKeys.GOOGLEAI_API_KEY)
+            .modelName("gemini-3-flash-preview")
+            .build();
+
+    public static final ChatModel GEMINI_3_PRO = GoogleAiGeminiChatModel.builder()
+            .apiKey(ApiKeys.GOOGLEAI_API_KEY)
+            .modelName("gemini-3-pro-preview")
+            .build();
+
+    // Legacy aliases for backwards compatibility (will be removed in future version)
+    @Deprecated(since = "1.0", forRemoval = true)
+    public static final ChatModel GPT_5 = GPT_5_2;
+
+    @Deprecated(since = "1.0", forRemoval = true)
+    public static final ChatModel CLAUDE_OPUS_4_1 = CLAUDE_OPUS_4_5;
+
+    @Deprecated(since = "1.0", forRemoval = true)
+    public static final ChatModel GEMINI_FLASH_25 = GEMINI_3_FLASH;
 }

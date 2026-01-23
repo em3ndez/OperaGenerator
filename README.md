@@ -5,11 +5,11 @@ An AI-powered opera generation system that orchestrates multiple AI models to cr
 ## Overview
 
 This application generates original operas by:
-- **Text Generation**: Alternating between GPT-5 and Claude Opus 4.1 to write scenes (Step 1)
+- **Text Generation**: Alternating between GPT-5.2 and Claude Opus 4.5 to write scenes (Step 1)
 - **Automatic Formatting**: Beautiful stanza formatting applied when scenes are saved (Step 2)
 - **Voice Narration**: Generating dramatic audio using ElevenLabs text-to-speech (Step 3)
-- **Image Generation**: Creating illustrations for each scene using OpenAI's gpt-image-1 (Step 4)
-- **Critical Reviews**: AI-generated critiques using Google Gemini (Step 5)
+- **Image Generation**: Creating illustrations for each scene using Google's Gemini Nano Banana (Step 4)
+- **Critical Reviews**: AI-generated critiques using Google Gemini 3 Pro (Step 5)
 - **Audio Playback**: Playing generated narration with JLayer for demonstrations
 - **Complete Organization**: All assets structured in organized directories
 
@@ -22,9 +22,9 @@ Plus integration with external tools:
 - Java 21 or higher
 - Gradle
 - API keys for:
-  - OpenAI (for GPT-5, GPT-5.1 Mini, and gpt-image-1 image generation)
-  - Anthropic (for Claude Opus 4.1)
-  - Google AI (optional, for opera critique feature)
+  - OpenAI (for GPT-5.2 text generation)
+  - Anthropic (for Claude Opus 4.5 text generation)
+  - Google AI (for Gemini 3 Pro critique and Nano Banana image generation - requires Pro account)
   - ElevenLabs (optional, for voice narration)
 
 ## Setup
@@ -33,9 +33,12 @@ Plus integration with external tools:
    ```bash
    export OPENAI_API_KEY=your_openai_key
    export ANTHROPIC_API_KEY=your_anthropic_key
-   export GOOGLEAI_API_KEY=your_google_ai_key    # Optional, for critique feature
-   export ELEVENLABS_API_KEY=your_elevenlabs_key # Optional, for voice narration
+   export GOOGLE_API_KEY=your_google_api_key      # Required for Nano Banana image generation
+   export GOOGLEAI_API_KEY=your_google_ai_key     # Required for Gemini critique feature
+   export ELEVENLABS_API_KEY=your_elevenlabs_key  # Optional, for voice narration
    ```
+
+   **Note**: `GOOGLE_API_KEY` and `GOOGLEAI_API_KEY` can use the same value. A Google AI Pro account is required for Nano Banana image generation.
 
 2. Build the project:
    ```bash
@@ -121,13 +124,13 @@ production_runs/20250218-123045_opera_title/
 
 ## Features
 
-- **AI Collaboration**: GPT-5 and Claude Opus 4.1 alternate writing scenes, creating unique stylistic variety
-- **Visual Storytelling**: Each scene gets an AI-generated illustration using gpt-image-1
+- **AI Collaboration**: GPT-5.2 and Claude Opus 4.5 alternate writing scenes, creating unique stylistic variety
+- **Visual Storytelling**: Each scene gets an AI-generated illustration using Google's Gemini Nano Banana (gemini-3-pro-image-preview)
 - **Voice Narration**: Dramatic audio narration of stage directions using ElevenLabs
 - **Audio Playback**: Live audio playback using JLayer for presentations and demos
 - **Automatic Formatting**: Beautiful stanza formatting applied automatically when scenes are saved
 - **Professional Layout**: Proper opera formatting with stage directions, character names, and sung lyrics
-- **Critical Review**: Optional AI-generated critique by Google Gemini acting as an opera critic
+- **Critical Review**: Optional AI-generated critique by Google Gemini 3 Pro acting as an opera critic
 - **Rate Limiting**: Intelligent throttling prevents API rate limit issues
 - **Modern Java**: Uses Java 21 features including virtual threads, HttpClient, and records
 
@@ -163,14 +166,15 @@ The project includes a complete 8-scene opera with beautiful libretto formatting
 
 Key components:
 - `IntegratedOperaGenerator` - Main orchestration class
-- `Conversation` - Manages AI model interactions
-- `OperaImageGenerator` - Handles illustration generation with rate limiting
+- `Conversation` - Manages AI model interactions (GPT-5.2 and Claude Opus 4.5)
+- `GeminiImageGenerator` - Handles illustration generation using Nano Banana with rate limiting
 - `LibrettoWriter` - Formats and saves opera content with automatic stanza formatting
 - `NarratorVoice` - Generates dramatic audio narration using ElevenLabs
 - `AudioPlayer` - Plays generated audio using JLayer
-- `OperaCritic` - Generates critical reviews using Google Gemini
+- `OperaCritic` - Generates critical reviews using Google Gemini 3 Pro
 - `ContinueHartfordOperaTest` - Example of continuing unfinished operas
 - `Opera` - Domain model using Java records with nested Scene records
+- `AiModels` - Configuration for all AI models (GPT-5.2, Claude Opus 4.5, Gemini 3)
 
 ## Troubleshooting
 

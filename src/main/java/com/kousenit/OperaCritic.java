@@ -15,7 +15,7 @@ import java.util.List;
  */
 public class OperaCritic {
 
-    private final ChatModel gemini = AiModels.GEMINI_FLASH_25;
+    private final ChatModel gemini = AiModels.GEMINI_3_PRO;
 
     /**
      * Generate a critical review of an opera libretto.
