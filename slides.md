@@ -46,6 +46,26 @@ Each AI model has unique strengths:
 </div>
 
 ---
+background: 'linear-gradient(135deg, #7c3aed, #5b21b6)'
+---
+
+## <span style="color: #fbbf24;">Let's Put On a Show!</span>
+
+<div style="font-size: 1.2em; line-height: 2.2;">
+
+<v-clicks>
+
+- 🎭 **Two LLMs** (GPT + Claude) trade writing scenes
+- 🎨 **Image generator** (Gemini Nano Banana) illustrates each scene
+  - Images generated in parallel using virtual threads
+- 📝 **Another LLM** (Gemini) writes a critic's review
+- 🎙️ **TTS tool** (ElevenLabs) generates audio narration
+
+</v-clicks>
+
+</div>
+
+---
 background: 'linear-gradient(135deg, #5b21b6, #7c3aed)'
 ---
 
