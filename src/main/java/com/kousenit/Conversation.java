@@ -57,7 +57,7 @@ public class Conversation {
     private static final double TEMPERATURE = 0.7;
 
     public final ChatModel gpt5 = AiModels.GPT_5_2;
-    public final ChatModel claude = AiModels.CLAUDE_OPUS_4_5;
+    public final ChatModel claude = AiModels.CLAUDE_OPUS_4_6;
 
     public Opera generateOpera(String title, int numberOfScenes) {
         return generateOpera(title, DEFAULT_PREMISE, numberOfScenes);
@@ -111,7 +111,7 @@ public class Conversation {
             // Use switch expression for model selection
             ModelInfo modelInfo = switch (i % 2) {
                 case 0 -> new ModelInfo(gpt5, "GPT-5.2");
-                case 1 -> new ModelInfo(claude, "Claude Opus 4.5");
+                case 1 -> new ModelInfo(claude, "Claude Opus 4.6");
                 default -> throw new IllegalStateException("Unexpected modulo result");
             };
 

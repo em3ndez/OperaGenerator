@@ -24,23 +24,23 @@ public class AiModels {
             .maxRetries(4)
             .build();
 
-    // Anthropic Models (upgraded to Opus 4.5)
-    public static final ChatModel CLAUDE_OPUS_4_5 = AnthropicChatModel.builder()
+    // Anthropic Models (upgraded to Opus 4.6)
+    public static final ChatModel CLAUDE_OPUS_4_6 = AnthropicChatModel.builder()
             .apiKey(ApiKeys.ANTHROPIC_API_KEY)
-            .modelName("claude-opus-4-5-20251101")
+            .modelName("claude-opus-4-6")
             .logRequests(true)
             .logResponses(true)
             .build();
 
-    // Google Gemini Models (upgraded to Gemini 3)
-    public static final ChatModel GEMINI_3_FLASH = GoogleAiGeminiChatModel.builder()
+    // Google Gemini Models (upgraded to Gemini 3.1)
+    public static final ChatModel GEMINI_3_1_FLASH = GoogleAiGeminiChatModel.builder()
             .apiKey(ApiKeys.GOOGLEAI_API_KEY)
-            .modelName("gemini-3-flash-preview")
+            .modelName("gemini-3.1-flash-preview")
             .build();
 
-    public static final ChatModel GEMINI_3_PRO = GoogleAiGeminiChatModel.builder()
+    public static final ChatModel GEMINI_3_1_PRO = GoogleAiGeminiChatModel.builder()
             .apiKey(ApiKeys.GOOGLEAI_API_KEY)
-            .modelName("gemini-3-pro-preview")
+            .modelName("gemini-3.1-pro-preview")
             .build();
 
     // Legacy aliases for backwards compatibility (will be removed in future version)
@@ -48,8 +48,17 @@ public class AiModels {
     public static final ChatModel GPT_5 = GPT_5_2;
 
     @Deprecated(since = "1.0", forRemoval = true)
-    public static final ChatModel CLAUDE_OPUS_4_1 = CLAUDE_OPUS_4_5;
+    public static final ChatModel CLAUDE_OPUS_4_5 = CLAUDE_OPUS_4_6;
 
     @Deprecated(since = "1.0", forRemoval = true)
-    public static final ChatModel GEMINI_FLASH_25 = GEMINI_3_FLASH;
+    public static final ChatModel CLAUDE_OPUS_4_1 = CLAUDE_OPUS_4_6;
+
+    @Deprecated(since = "1.0", forRemoval = true)
+    public static final ChatModel GEMINI_3_FLASH = GEMINI_3_1_FLASH;
+
+    @Deprecated(since = "1.0", forRemoval = true)
+    public static final ChatModel GEMINI_3_PRO = GEMINI_3_1_PRO;
+
+    @Deprecated(since = "1.0", forRemoval = true)
+    public static final ChatModel GEMINI_FLASH_25 = GEMINI_3_1_FLASH;
 }

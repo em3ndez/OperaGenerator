@@ -14,12 +14,12 @@ background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
 ## <span style="color: #fbbf24; font-size: 1.2em;">Experiments with Multi-Agent AI</span>
 
 <div style="color: #e0f2fe; font-size: 1.1em; margin-top: 1.5em;">
-Three Orchestration Patterns<br/>
+Four Orchestration Patterns<br/>
 for Building AI-Powered Applications in Java
 </div>
 
 <div style="color: #c4b5fd; font-size: 0.9em; margin-top: 2em;">
-Ken Kousen • jChampionsConference • January 2026
+Ken Kousen • Devnexus 2026 • March 5, 2026
 </div>
 
 ---
@@ -34,10 +34,10 @@ background: 'linear-gradient(to bottom right, #1e293b, #334155)'
 Each AI model has unique strengths:
 
 - **<span style="color: #60a5fa;">GPT-5.2:</span>** Creative, fast, excellent at dialogue
-- **<span style="color: #a78bfa;">Claude Opus 4.5:</span>** Superior reasoning, thoughtful prose
+- **<span style="color: #a78bfa;">Claude Opus 4.6:</span>** Superior reasoning, thoughtful prose
 - **<span style="color: #34d399;">Gemini Nano Banana:</span>** Image generation capabilities
 - **<span style="color: #fbbf24;">ElevenLabs:</span>** Realistic voice narration
-- **<span style="color: #fb923c;">Gemini 3 Pro:</span>** Critical analysis and review
+- **<span style="color: #fb923c;">Gemini 3.1 Pro:</span>** Critical analysis and review
 
 <div style="margin-top: 1em; padding: 1em; background: rgba(251,191,36,0.1); border-radius: 8px; border: 2px solid #fbbf24;">
 <span style="color: #fbbf24;">The Challenge:</span> How do we orchestrate multiple AI models to build something complex?
@@ -183,13 +183,13 @@ background: 'linear-gradient(135deg, #065f46, #047857)'
 graph TB
     subgraph "Scene Writing"
         GPT["GPT-5.2<br/>(Odd Scenes)"]
-        Claude["Claude Opus 4.5<br/>(Even Scenes)"]
+        Claude["Claude Opus 4.6<br/>(Even Scenes)"]
     end
 
     subgraph "Production Pipeline"
         Gemini["Gemini Nano Banana<br/>(Image Generation)"]
         ElevenLabs["ElevenLabs<br/>(Dramatic Narration)"]
-        GeminiPro["Gemini 3 Pro<br/>(Critical Review)"]
+        GeminiPro["Gemini 3.1 Pro<br/>(Review)"]
     end
 
     GPT --> Libretto[Complete Libretto]
@@ -224,6 +224,9 @@ background: 'linear-gradient(135deg, #312e81, #4c1d95)'
 2. **Then tested emerging agentic frameworks**
    - `langchain4j-agentic`: LLM-powered supervisor pattern
    - `embabel`: GOAP (Goal-Oriented Action Planning)
+
+3. **Finally: Claude Code Teams** as the orchestrator itself
+   - Agent-as-orchestrator: the coding tool runs the pipeline
 
 </v-clicks>
 
@@ -274,6 +277,7 @@ background: 'linear-gradient(135deg, #1e3a8a, #1e40af)'
 | **Manual** | Pass `List<ChatMessage>` between models |
 | **langchain4j-agentic** | `outputKey` method |
 | **embabel** | "Agentic scope" pattern |
+| **Claude Teams** | Filesystem (`opera.json`) as blackboard |
 
 </div>
 
@@ -283,19 +287,15 @@ background: 'linear-gradient(135deg, #1e3a8a, #1e40af)'
 background: 'linear-gradient(to bottom right, #1e293b, #334155)'
 ---
 
-## <span style="color: #fbbf24;">Three Branches, Three Approaches</span>
+## <span style="color: #fbbf24;">Four Branches, Four Approaches</span>
 
-<div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; font-size: 0.95em;">
+<div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 0.8rem; font-size: 0.85em;">
 
-<div style="background: rgba(96,165,250,0.15); padding: 1em; border-radius: 8px;">
+<div style="background: rgba(96,165,250,0.15); padding: 0.8em; border-radius: 8px;">
 <strong style="color: #60a5fa; font-size: 1.1em;">main</strong><br/>
 <span style="color: #dbeafe; font-size: 0.9em;">Manual Orchestration</span>
 
-<div style="margin-top: 0.8em; font-size: 0.9em; color: #e0f2fe;">
-
-**Key Files:**
-- `Conversation.java`
-- `IntegratedOperaGenerator.java`
+<div style="margin-top: 0.6em; font-size: 0.9em; color: #e0f2fe;">
 
 **Pattern:**
 Code-driven, explicit control
@@ -306,40 +306,47 @@ Code-driven, explicit control
 </div>
 </div>
 
-<div style="background: rgba(168,85,247,0.15); padding: 1em; border-radius: 8px;">
+<div style="background: rgba(168,85,247,0.15); padding: 0.8em; border-radius: 8px;">
 <strong style="color: #a78bfa; font-size: 1.1em;">langchain4j-agentic</strong><br/>
 <span style="color: #e9d5ff; font-size: 0.9em;">LLM Supervisor</span>
 
-<div style="margin-top: 0.8em; font-size: 0.9em; color: #e9d5ff;">
-
-**Key Files:**
-- `AgenticOperaGenerator.java`
-- `OperaTools.java`
+<div style="margin-top: 0.6em; font-size: 0.9em; color: #e9d5ff;">
 
 **Pattern:**
 Supervisor LLM decides workflow
 
 **Issues:**
-⚠️ JSON truncation, tool role-playing
+⚠️ Tool role-playing, truncation
 
 </div>
 </div>
 
-<div style="background: rgba(52,211,153,0.15); padding: 1em; border-radius: 8px;">
+<div style="background: rgba(52,211,153,0.15); padding: 0.8em; border-radius: 8px;">
 <strong style="color: #34d399; font-size: 1.1em;">embabel</strong><br/>
 <span style="color: #d1fae5; font-size: 0.9em;">GOAP Planner</span>
 
-<div style="margin-top: 0.8em; font-size: 0.9em; color: #d1fae5;">
-
-**Key Files:**
-- `OperaSceneStages.java`
-- Blackboard pattern
+<div style="margin-top: 0.6em; font-size: 0.9em; color: #d1fae5;">
 
 **Pattern:**
 Goal-oriented action planning
 
 **Issues:**
-⚠️ GOAP couldn't chain iterative states
+⚠️ GOAP couldn't iterate
+
+</div>
+</div>
+
+<div style="background: rgba(251,191,36,0.15); padding: 0.8em; border-radius: 8px;">
+<strong style="color: #fbbf24; font-size: 1.1em;">claude-teams</strong><br/>
+<span style="color: #fef3c7; font-size: 0.9em;">Agent Orchestrator</span>
+
+<div style="margin-top: 0.6em; font-size: 0.9em; color: #fef3c7;">
+
+**Pattern:**
+Coding agents run pipeline
+
+**Issues:**
+⚠️ Role-playing, unsolicited fixes
 
 </div>
 </div>
@@ -347,7 +354,7 @@ Goal-oriented action planning
 </div>
 
 <div style="margin-top: 1em; text-align: center; padding: 0.6em; background: rgba(251,191,36,0.1); border-radius: 8px;">
-<span style="color: #fbbf24;">All three branches are fully documented with walkthroughs and lessons learned</span>
+<span style="color: #fbbf24;">All four branches are fully documented with walkthroughs and lessons learned</span>
 </div>
 
 ---
@@ -397,7 +404,7 @@ background: 'linear-gradient(135deg, #1e3a8a, #1e40af)'
 ```java
 public class Conversation {
     public final ChatModel gpt5 = AiModels.GPT_5_2;
-    public final ChatModel claude = AiModels.CLAUDE_OPUS_4_5;
+    public final ChatModel claude = AiModels.CLAUDE_OPUS_4_6;
 
     public Opera generateOpera(String title, int numberOfScenes) {
         ChatMemory memory = MessageWindowChatMemory
@@ -407,7 +414,7 @@ public class Conversation {
         for (int i = 1; i <= numberOfScenes; i++) {
             // Alternate between models
             ChatModel currentModel = (i % 2 == 1) ? gpt5 : claude;
-            String modelName = (i % 2 == 1) ? "GPT-5.2" : "Claude Opus 4.5";
+            String modelName = (i % 2 == 1) ? "GPT-5.2" : "Claude Opus 4.6";
 
             String sceneContent = currentModel.chat(memory,
                 buildPrompt(i, numberOfScenes));
@@ -445,7 +452,7 @@ public class IntegratedOperaGenerator {
         // Step 4: Generate illustrations (parallel with virtual threads)
         GeminiImageGenerator.generateImages(opera);
 
-        // Step 5: Generate critical review (Gemini 3 Pro)
+        // Step 5: Generate critical review (Gemini 3.1 Pro)
         OperaCritic.generateCritique(opera, operaDir);
     }
 }
@@ -577,7 +584,7 @@ this.gptWriter = AgenticServices.agentBuilder(SceneWriterAgent.class)
     .build();
 
 this.claudeWriter = AgenticServices.agentBuilder(SceneWriterAgent.class)
-    .chatModel(AiModels.CLAUDE_OPUS_4_5)
+    .chatModel(AiModels.CLAUDE_OPUS_4_6)
     .name("claudeSceneWriter")
     .build();
 
@@ -600,7 +607,7 @@ background: 'linear-gradient(135deg, #5b21b6, #7c3aed)'
 ```java
 // Build supervisor that orchestrates sub-agents
 this.supervisor = AgenticServices.supervisorBuilder()
-    .chatModel(AiModels.CLAUDE_OPUS_4_5_LARGE)  // 8192 tokens!
+    .chatModel(AiModels.CLAUDE_OPUS_4_6_LARGE)  // 8192 tokens!
     .subAgents(gptWriter, claudeWriter, productionAgent)
     .supervisorContext("""
         You orchestrate opera creation.
@@ -722,7 +729,7 @@ public static final ChatModel CLAUDE_OPUS_4_5 = AnthropicChatModel.builder()
     .maxTokens(1024)  // ❌ Truncates JSON with scene content
 
 // Supervisor needs room for structured data (agent selection + arguments)
-public static final ChatModel CLAUDE_OPUS_4_5_LARGE = AnthropicChatModel.builder()
+public static final ChatModel CLAUDE_OPUS_4_6_LARGE = AnthropicChatModel.builder()
     .maxTokens(8192)  // ✅ Fits full scene content in JSON payloads
 ```
 
@@ -983,6 +990,134 @@ class: text-center
 ---
 
 <div style="position: absolute; bottom: 2em; left: 0; right: 0; text-align: center; background: rgba(0,0,0,0.7); padding: 1em;">
+<span style="color: #fbbf24; font-size: 2em; font-weight: bold;">Claude Code Teams</span>
+</div>
+
+---
+background: 'linear-gradient(135deg, #92400e, #b45309)'
+---
+
+## <span style="color: #fbbf24;">Approach 4: Claude Code Teams</span>
+
+<div style="font-size: 1.1em; line-height: 1.9;">
+
+**The coding agent itself becomes the orchestrator:**
+
+<v-clicks>
+
+- Define specialized agents (scene-writer, image-gen, narrator, critic)
+- Team lead coordinates sequential and parallel phases
+- Agents invoke pipeline steps via Gradle tasks
+- Filesystem is the "blackboard" — `opera.json` is the handoff artifact
+
+</v-clicks>
+
+<div style="margin-top: 1.5em; padding: 0.8em; background: rgba(251,191,36,0.1); border-radius: 8px; text-align: center;">
+<span style="color: #fbbf24;">What happens when you let the agent decide HOW to orchestrate?</span>
+</div>
+
+</div>
+
+---
+background: 'linear-gradient(135deg, #b45309, #92400e)'
+---
+
+## <span style="color: #fbbf24;">Claude Teams: Two Modes Tested</span>
+
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; font-size: 0.95em;">
+
+<div style="background: rgba(96,165,250,0.15); padding: 1em; border-radius: 8px;">
+<strong style="color: #60a5fa; font-size: 1.1em;">Option A: Prescribed</strong><br/>
+<span style="color: #dbeafe; font-size: 0.9em;">Agents given exact Gradle commands</span>
+
+<div style="margin-top: 0.8em; font-size: 0.9em; color: #e0f2fe;">
+
+- Scene-writer: `./gradlew generateScenes`
+- Production agents: `./gradlew generateImages`, etc.
+- Reliable — same as running it yourself
+- **But:** couldn't fix bugs when they appeared
+- Narrator missed all scene narrations (format mismatch)
+
+</div>
+</div>
+
+<div style="background: rgba(251,191,36,0.15); padding: 1em; border-radius: 8px;">
+<strong style="color: #fbbf24; font-size: 1.1em;">Option B: Autonomous</strong><br/>
+<span style="color: #fef3c7; font-size: 0.9em;">Agents given goals, not commands</span>
+
+<div style="margin-top: 0.8em; font-size: 0.9em; color: #fef3c7;">
+
+- Scene-writer: **wrote scenes itself**, faked model attribution
+- Narrator: **fixed the bug**, then ran pipeline successfully
+- Critic: added tests, used test runner instead of Gradle
+- 2.5x more tokens, but more capable
+
+</div>
+</div>
+
+</div>
+
+---
+background: 'linear-gradient(135deg, #92400e, #b45309)'
+---
+
+## <span style="color: #fbbf24;">The Role-Playing Problem (Again)</span>
+
+<div style="font-size: 0.95em;">
+
+**The autonomous scene-writer never called GPT-5.2 or Claude Opus 4.6:**
+
+<v-clicks>
+
+- Explored codebase to understand expected file formats
+- **Wrote all three scenes itself** (as the agent model)
+- Labeled them "Author: GPT-5.2" and "Author: Claude Opus 4.6"
+- Output was correctly formatted — downstream agents consumed it fine
+- **Zero references to `gradlew`** in the entire transcript
+
+</v-clicks>
+
+<div style="margin-top: 1em; padding: 0.8em; background: rgba(251,191,36,0.1); border-radius: 8px; text-align: center;">
+<span style="color: #fbbf24;">Same pattern as langchain4j-agentic's "tool role-playing" — the output looks right, but the provenance is fabricated</span>
+</div>
+
+</div>
+
+---
+background: 'linear-gradient(135deg, #b45309, #92400e)'
+---
+
+## <span style="color: #fbbf24;">The Upside: Autonomous Bug Fixing</span>
+
+<div style="font-size: 1.05em; line-height: 2;">
+
+**Option A narrator failed** — stage directions in `*italics*`, parser expected `[brackets]`
+
+**Option B narrator:**
+
+<v-clicks>
+
+1. Diagnosed the format mismatch by reading code
+2. Modified `NarratorVoice.java` to handle both formats
+3. Ran the pipeline — all 4 audio files generated
+4. Created a test for future use
+
+</v-clicks>
+
+<div style="margin-top: 1em; padding: 0.8em; background: rgba(251,191,36,0.1); border-radius: 8px; text-align: center;">
+<span style="color: #fbbf24;">More autonomy = more capability + more unpredictability</span>
+</div>
+
+</div>
+
+---
+layout: image
+image: /showcase/vines_of_hartford_arias_of_steel/scene_1_illustration.png
+backgroundSize: cover
+class: text-center
+---
+
+<div style="position: absolute; bottom: 2em; left: 0; right: 0; text-align: center; background: rgba(0,0,0,0.7); padding: 1em;">
 <span style="color: #fbbf24; font-size: 2em; font-weight: bold;">Lessons Learned</span>
 </div>
 
@@ -990,7 +1125,7 @@ class: text-center
 background: 'linear-gradient(135deg, #312e81, #4c1d95)'
 ---
 
-## <span style="color: #fbbf24;">Comparison: Three Orchestration Patterns</span>
+## <span style="color: #fbbf24;">Comparison: Four Orchestration Patterns</span>
 
 <style>
 table { width: 100%; border-collapse: collapse; font-size: 0.85em; }
@@ -1005,53 +1140,54 @@ th { background: rgba(99,102,241,0.2); color: #fbbf24; }
 <thead>
 <tr>
 <th>Aspect</th>
-<th>Manual (main)</th>
-<th>LangChain4j-Agentic</th>
-<th>Embabel (GOAP)</th>
+<th>Manual</th>
+<th>LangChain4j</th>
+<th>Embabel</th>
+<th>Claude Teams</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td><strong>Orchestration</strong></td>
 <td>Code-driven</td>
-<td>Supervisor LLM decides</td>
-<td>GOAP planner decides</td>
+<td>Supervisor LLM</td>
+<td>GOAP planner</td>
+<td>Agent processes</td>
 </tr>
 <tr>
 <td><strong>Predictability</strong></td>
 <td class="good">High</td>
 <td class="ok">Medium</td>
 <td class="ok">Medium</td>
-</tr>
-<tr>
-<td><strong>Debuggability</strong></td>
-<td class="good">Easy</td>
-<td class="bad">Hard</td>
-<td class="ok">Medium</td>
+<td class="ok">Depends on mode</td>
 </tr>
 <tr>
 <td><strong>Flexibility</strong></td>
 <td class="bad">Rigid</td>
 <td class="good">High</td>
-<td class="good">High (in theory)</td>
-</tr>
-<tr>
-<td><strong>Natural Language</strong></td>
-<td class="bad">No</td>
-<td class="good">Yes</td>
-<td class="ok">Limited</td>
+<td class="good">High (theory)</td>
+<td class="good">Highest</td>
 </tr>
 <tr>
 <td><strong>Reliability</strong></td>
 <td class="good">Excellent</td>
-<td class="ok">Good (with workarounds)</td>
-<td class="bad">Manual works, agentic stuck</td>
+<td class="ok">Workarounds</td>
+<td class="bad">Agentic stuck</td>
+<td class="ok">Role-playing risk</td>
+</tr>
+<tr>
+<td><strong>Shortcut</strong></td>
+<td>None</td>
+<td>Role-playing</td>
+<td>Stopped early</td>
+<td>Faked provenance</td>
 </tr>
 <tr>
 <td><strong>Best For</strong></td>
-<td>Production systems</td>
-<td>Natural language workflows</td>
-<td>Domain-driven planning</td>
+<td>Production</td>
+<td>NL workflows</td>
+<td>Domain planning</td>
+<td>Adaptive pipelines</td>
 </tr>
 </tbody>
 </table>
@@ -1069,19 +1205,62 @@ background: 'linear-gradient(135deg, #1e40af, #1e3a8a)'
 1. **Manual orchestration is MORE RELIABLE** (for now)<br/>
    <span style="color: #e0f2fe; font-size: 0.85em;">Predictable, debuggable, production-ready</span>
 
-2. **These frameworks are EARLY**<br/>
-   <span style="color: #e0f2fe; font-size: 0.85em;">Expect significant changes, budget debugging time</span>
+2. **Agents take shortcuts** — consistently, across all frameworks<br/>
+   <span style="color: #e0f2fe; font-size: 0.85em;">Role-playing, summarizing, faking provenance</span>
 
-3. **Architectural patterns are valuable**<br/>
-   <span style="color: #e0f2fe; font-size: 0.85em;">Supervisor pattern, GOAP, blackboard - learn them now</span>
+3. **More autonomy = more capability + more unpredictability**<br/>
+   <span style="color: #e0f2fe; font-size: 0.85em;">Option B narrator fixed a real bug; scene-writer fabricated authorship</span>
 
-4. **Different patterns suit different problems**<br/>
-   <span style="color: #e0f2fe; font-size: 0.85em;">Manual for reliability, agentic for flexibility</span>
+4. **Interface contracts between agents matter**<br/>
+   <span style="color: #e0f2fe; font-size: 0.85em;">Format mismatches (`[brackets]` vs `*italics*`) break real pipelines</span>
 
-5. **Token limits matter in agent systems**<br/>
-   <span style="color: #e0f2fe; font-size: 0.85em;">Supervisor communication needs space for structured data</span>
+5. **Architectural patterns outlive specific frameworks**<br/>
+   <span style="color: #e0f2fe; font-size: 0.85em;">Supervisor, GOAP, blackboard, agent teams — learn them all</span>
 
 </v-clicks>
+
+</div>
+
+---
+background: 'linear-gradient(135deg, #0f766e, #134e4a)'
+---
+
+## <span style="color: #fbbf24;">Research Confirms Our Findings</span>
+
+<div style="font-size: 1.05em; line-height: 1.8;">
+
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5em;">
+
+<div style="background: rgba(251,191,36,0.1); padding: 1em; border-radius: 8px;">
+<strong style="color: #fde047;">Nate Jones: 6 Rules for Multi-Agent Scaling</strong><br/><br/>
+<span style="color: #d1fae5;">
+
+1. **Two tiers, not teams** — orchestrator + workers<br/>
+2. **Workers stay ignorant** — limit context<br/>
+3. **No shared mutable state** — artifacts, not memory<br/>
+4. **Plan for endings** — episodic, not perpetual<br/>
+5. **Prompts over infrastructure**<br/>
+6. **Tests as architecture**
+</span>
+</div>
+
+<div style="background: rgba(99,102,241,0.1); padding: 1em; border-radius: 8px;">
+<strong style="color: #a78bfa;">How Our Experiments Matched</strong><br/><br/>
+<span style="color: #dbeafe;">
+
+✅ Prescribed orchestration > peer coordination<br/>
+✅ Scene-writer took shortcuts with too much context<br/>
+✅ Filesystem-as-blackboard worked well<br/>
+✅ Interface contracts > complex frameworks<br/>
+⚠️ Google-MIT: more agents can make performance <em>worse</em>
+</span>
+</div>
+
+</div>
+
+<div style="margin-top: 1em; padding: 0.6em; background: rgba(251,191,36,0.1); border-radius: 8px; text-align: center;">
+<span style="color: #fbbf24;">Coordination overhead grows faster than capability — keep it simple</span>
+</div>
 
 </div>
 
@@ -1129,11 +1308,12 @@ background: 'linear-gradient(135deg, #1e40af, #1e3a8a)'
 <strong style="color: #60a5fa; font-size: 1.3em;">github.com/kousen/OperaGenerator</strong>
 </div>
 
-<div style="color: #fde047; font-size: 0.9em; margin-bottom: 0.5em;">Three branches:</div>
+<div style="color: #fde047; font-size: 0.9em; margin-bottom: 0.5em;">Four branches:</div>
 <div style="font-size: 1em; color: #dbeafe; line-height: 1.8;">
 🎭 <strong>main:</strong> Manual orchestration (most reliable)<br/>
 🤖 <strong>langchain4j-agentic:</strong> LLM supervisor pattern<br/>
-🎯 <strong>embabel:</strong> GOAP planning with blackboard
+🎯 <strong>embabel:</strong> GOAP planning with blackboard<br/>
+🧠 <strong>claude-teams:</strong> Agent-as-orchestrator pattern
 </div>
 
 </div>
@@ -1177,7 +1357,7 @@ background: 'linear-gradient(135deg, #1e3a8a, #1e40af)'
 <span style="color: #fef3c7;">
 • Java 21 + virtual threads<br/>
 • LangChain4j 1.10.0<br/>
-• GPT-5.2, Claude, Gemini<br/>
+• GPT-5.2, Claude Opus 4.6, Gemini 3.1<br/>
 • ElevenLabs narration
 </span>
 </div>
@@ -1202,7 +1382,7 @@ background: 'linear-gradient(135deg, #7c3aed, #6d28d9)'
 📺 <a href="https://youtube.com/@talesfromthejarside" style="color: #60a5fa;">@talesfromthejarside</a>
 </div>
 <div style="text-align: left; color: #e0f2fe;">
-📝 <a href="https://kousenit.substack.com" style="color: #60a5fa;">kousenit.substack.com</a><br/>
+📝 <a href="https://substack.com/@talesfromthejarside" style="color: #60a5fa;">substack.com/@talesfromthejarside</a><br/>
 💼 <a href="https://linkedin.com/in/kenkousen" style="color: #60a5fa;">linkedin.com/in/kenkousen</a><br/>
 🦋 <a href="https://bsky.app/profile/kousenit.com" style="color: #60a5fa;">bsky.app/profile/kousenit.com</a>
 </div>
