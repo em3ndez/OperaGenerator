@@ -724,12 +724,13 @@ background: 'linear-gradient(135deg, #991b1b, #dc2626)'
 **Key lesson: Supervisor communication needs space for structured data**
 
 ```java
-// Default model: 1024 tokens - TOO SMALL for supervisor communication
-public static final ChatModel CLAUDE_OPUS_4_5 = AnthropicChatModel.builder()
-    .maxTokens(1024)  // ❌ Truncates JSON with scene content
+// Default model: no explicit maxTokens — API default truncates large JSON
+public static final ChatModel CLAUDE_OPUS_4_6 = AnthropicChatModel.builder()
+    .modelName("claude-opus-4-6")  // ❌ Default token limit too small
 
 // Supervisor needs room for structured data (agent selection + arguments)
 public static final ChatModel CLAUDE_OPUS_4_6_LARGE = AnthropicChatModel.builder()
+    .modelName("claude-opus-4-6")
     .maxTokens(8192)  // ✅ Fits full scene content in JSON payloads
 ```
 
