@@ -1113,7 +1113,7 @@ background: 'linear-gradient(135deg, #b45309, #92400e)'
 
 ---
 layout: image
-image: /showcase/iron_aria_of_the_connecticut_wilds/scene_5_illustration.png
+image: /showcase/iron_aria_the_lost_city_of_hartford/scene_5_illustration.png
 backgroundSize: cover
 class: text-center
 ---
