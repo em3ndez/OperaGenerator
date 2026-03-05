@@ -1234,27 +1234,25 @@ background: 'linear-gradient(135deg, #0f766e, #134e4a)'
 
 <div style="background: rgba(251,191,36,0.1); padding: 1em; border-radius: 8px;">
 <strong style="color: #fde047;">Nate Jones: 6 Rules for Multi-Agent Scaling</strong><br/><br/>
-<span style="color: #d1fae5;">
-
-1. **Two tiers, not teams** — orchestrator + workers<br/>
-2. **Workers stay ignorant** — limit context<br/>
-3. **No shared mutable state** — artifacts, not memory<br/>
-4. **Plan for endings** — episodic, not perpetual<br/>
-5. **Prompts over infrastructure**<br/>
-6. **Tests as architecture**<br/>
-</span>
+<div style="color: #d1fae5; font-size: 0.9em; line-height: 1.6;">
+1. <strong>Two tiers, not teams</strong> — orchestrator + workers<br/>
+2. <strong>Workers stay ignorant</strong> — limit context<br/>
+3. <strong>No shared mutable state</strong> — artifacts, not memory<br/>
+4. <strong>Plan for endings</strong> — episodic, not perpetual<br/>
+5. <strong>Prompts over infrastructure</strong><br/>
+6. <strong>Tests as architecture</strong>
+</div>
 </div>
 
 <div style="background: rgba(99,102,241,0.1); padding: 1em; border-radius: 8px;">
 <strong style="color: #a78bfa;">How Our Experiments Matched</strong><br/><br/>
-<span style="color: #dbeafe;">
-
+<div style="color: #dbeafe; font-size: 0.9em; line-height: 1.6;">
 ✅ Prescribed orchestration > peer coordination<br/>
 ✅ Scene-writer took shortcuts with too much context<br/>
 ✅ Filesystem-as-blackboard worked well<br/>
 ✅ Interface contracts > complex frameworks<br/>
 ⚠️ Google-MIT: more agents can make performance <em>worse</em>
-</span>
+</div>
 </div>
 
 </div>
