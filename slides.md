@@ -1279,7 +1279,7 @@ background: 'linear-gradient(135deg, #7c3aed, #6d28d9)'
 - Agentic frameworks will mature rapidly
 - Better patterns for iterative workflows
 - Improved debugging and observability tools
-- More sophisticated supervisor protocols
+- Scaling up: Steve Yegge's **Gas Town** coordinates 20-30 Claude Code agents in parallel on a single codebase
 
 **What to do now:**
 - Build working systems with manual orchestration
