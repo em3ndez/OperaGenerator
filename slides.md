@@ -1113,7 +1113,7 @@ background: 'linear-gradient(135deg, #b45309, #92400e)'
 
 ---
 layout: image
-image: /showcase/vines_of_hartford_arias_of_steel/scene_1_illustration.png
+image: /showcase/iron_aria_of_the_connecticut_wilds/scene_5_illustration.png
 backgroundSize: cover
 class: text-center
 ---
