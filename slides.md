@@ -1241,7 +1241,7 @@ background: 'linear-gradient(135deg, #0f766e, #134e4a)'
 3. **No shared mutable state** — artifacts, not memory<br/>
 4. **Plan for endings** — episodic, not perpetual<br/>
 5. **Prompts over infrastructure**<br/>
-6. **Tests as architecture**
+6. **Tests as architecture**<br/>
 </span>
 </div>
 
